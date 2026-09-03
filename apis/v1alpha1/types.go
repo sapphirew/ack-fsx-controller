@@ -25,3 +25,1555 @@ var (
 	_ = &metav1.Time{}
 	_ = ackv1alpha1.AWSAccountID("")
 )
+
+// The Microsoft Active Directory attributes of the Amazon FSx for Windows File
+// Server file system.
+type ActiveDirectoryBackupAttributes struct {
+	ActiveDirectoryID *string `json:"activeDirectoryID,omitempty"`
+	DomainName        *string `json:"domainName,omitempty"`
+	// The Amazon Resource Name (ARN) for a given resource. ARNs uniquely identify
+	// Amazon Web Services resources. We require an ARN when you need to specify
+	// a resource unambiguously across all of Amazon Web Services. For more information,
+	// see Amazon Resource Names (ARNs) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
+	// in the Amazon Web Services General Reference.
+	ResourceARN *string `json:"resourceARN,omitempty"`
+}
+
+// Describes a specific Amazon FSx administrative action for the current Windows,
+// Lustre, OpenZFS, or ONTAP file system or volume.
+type AdministrativeAction struct {
+	// A detailed error message.
+	Message *string `json:"message,omitempty"`
+	// A description of a specific Amazon FSx file system.
+	TargetFileSystemValues *FileSystem_SDK `json:"targetFileSystemValues,omitempty"`
+}
+
+// Provides information about a failed administrative action.
+type AdministrativeActionFailureDetails struct {
+	// A detailed error message.
+	Message *string `json:"message,omitempty"`
+}
+
+// A DNS alias that is associated with the file system. You can use a DNS alias
+// to access a file system using user-defined DNS names, in addition to the
+// default DNS name that Amazon FSx assigns to the file system. For more information,
+// see DNS aliases (https://docs.aws.amazon.com/fsx/latest/WindowsGuide/managing-dns-aliases.html)
+// in the FSx for Windows File Server User Guide.
+type Alias struct {
+	Name *string `json:"name,omitempty"`
+}
+
+// A backup of an Amazon FSx for Windows File Server, Amazon FSx for Lustre
+// file system, Amazon FSx for NetApp ONTAP volume, or Amazon FSx for OpenZFS
+// file system.
+type Backup struct {
+	// The ID of the source backup. Specifies the backup that you are copying.
+	BackupID *string `json:"backupID,omitempty"`
+	// The time that the resource was created, in seconds (since 1970-01-01T00:00:00Z),
+	// also known as Unix time.
+	CreationTime *metav1.Time `json:"creationTime,omitempty"`
+	// A description of a specific Amazon FSx file system.
+	FileSystem *FileSystem_SDK `json:"fileSystem,omitempty"`
+	// Specifies the ID of the Key Management Service (KMS) key to use for encrypting
+	// data on Amazon FSx file systems, as follows:
+	//
+	//    * Amazon FSx for Lustre PERSISTENT_1 and PERSISTENT_2 deployment types
+	//    only. SCRATCH_1 and SCRATCH_2 types are encrypted using the Amazon FSx
+	//    service KMS key for your account.
+	//
+	//    * Amazon FSx for NetApp ONTAP
+	//
+	//    * Amazon FSx for OpenZFS
+	//
+	//    * Amazon FSx for Windows File Server
+	//
+	// If a KmsKeyId isn't specified, the Amazon FSx-managed KMS key for your account
+	// is used. For more information, see Encrypt (https://docs.aws.amazon.com/kms/latest/APIReference/API_Encrypt.html)
+	// in the Key Management Service API Reference.
+	KMSKeyID *string `json:"kmsKeyID,omitempty"`
+	// An Amazon Web Services account ID. This ID is a 12-digit number that you
+	// use to construct Amazon Resource Names (ARNs) for resources.
+	OwnerID *string `json:"ownerID,omitempty"`
+	// The Amazon Resource Name (ARN) for a given resource. ARNs uniquely identify
+	// Amazon Web Services resources. We require an ARN when you need to specify
+	// a resource unambiguously across all of Amazon Web Services. For more information,
+	// see Amazon Resource Names (ARNs) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
+	// in the Amazon Web Services General Reference.
+	ResourceARN *string `json:"resourceARN,omitempty"`
+	// The ID of the source backup. Specifies the backup that you are copying.
+	SourceBackupID *string `json:"sourceBackupID,omitempty"`
+	// A list of Tag values, with a maximum of 50 elements.
+	Tags []*Tag `json:"tags,omitempty"`
+}
+
+// If backup creation fails, this structure contains the details of that failure.
+type BackupFailureDetails struct {
+	// A detailed error message.
+	Message *string `json:"message,omitempty"`
+}
+
+// Provides a report detailing the data repository task results of the files
+// processed that match the criteria specified in the report Scope parameter.
+// FSx delivers the report to the file system's linked data repository in Amazon
+// S3, using the path specified in the report Path parameter. You can specify
+// whether or not a report gets generated for a task using the Enabled parameter.
+type CompletionReport struct {
+	Enabled *bool   `json:"enabled,omitempty"`
+	Path    *string `json:"path,omitempty"`
+}
+
+// Specifies the FSx for ONTAP volume that the S3 access point will be attached
+// to, and the file system user identity.
+type CreateAndAttachS3AccessPointOntapConfiguration struct {
+	VolumeID *string `json:"volumeID,omitempty"`
+}
+
+// Specifies the FSx for OpenZFS volume that the S3 access point will be attached
+// to, and the file system user identity.
+type CreateAndAttachS3AccessPointOpenZFSConfiguration struct {
+	VolumeID *string `json:"volumeID,omitempty"`
+}
+
+// The Amazon File Cache configuration for the cache that you are creating.
+type CreateFileCacheLustreConfiguration struct {
+	PerUnitStorageThroughput *int64 `json:"perUnitStorageThroughput,omitempty"`
+	// The preferred start time to perform weekly maintenance, formatted d:HH:MM
+	// in the UTC time zone, where d is the weekday number, from 1 through 7, beginning
+	// with Monday and ending with Sunday.
+	//
+	// For example, 1:05:00 specifies maintenance at 5 AM Monday.
+	WeeklyMaintenanceStartTime *string `json:"weeklyMaintenanceStartTime,omitempty"`
+}
+
+// The Lustre configuration for the file system being created.
+//
+// The following parameters are not supported for file systems with a data repository
+// association created with .
+//
+//   - AutoImportPolicy
+//
+//   - ExportPath
+//
+//   - ImportedFileChunkSize
+//
+//   - ImportPath
+type CreateFileSystemLustreConfiguration struct {
+	AutoImportPolicy *string `json:"autoImportPolicy,omitempty"`
+	// The number of days to retain automatic backups. Setting this property to
+	// 0 disables automatic backups. You can retain automatic backups for a maximum
+	// of 90 days. The default is 30.
+	AutomaticBackupRetentionDays *int64 `json:"automaticBackupRetentionDays,omitempty"`
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	CopyTagsToBackups *bool `json:"copyTagsToBackups,omitempty"`
+	// A recurring daily time, in the format HH:MM. HH is the zero-padded hour of
+	// the day (0-23), and MM is the zero-padded minute of the hour. For example,
+	// 05:00 specifies 5 AM daily.
+	DailyAutomaticBackupStartTime *string `json:"dailyAutomaticBackupStartTime,omitempty"`
+	DataCompressionType           *string `json:"dataCompressionType,omitempty"`
+	// The configuration for the optional provisioned SSD read cache on Amazon FSx
+	// for Lustre file systems that use the Intelligent-Tiering storage class.
+	DataReadCacheConfiguration *LustreReadCacheConfiguration `json:"dataReadCacheConfiguration,omitempty"`
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	DeploymentType *string `json:"deploymentType,omitempty"`
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	DriveCacheType *string `json:"driveCacheType,omitempty"`
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	EfaEnabled *bool `json:"efaEnabled,omitempty"`
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	ExportPath *string `json:"exportPath,omitempty"`
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	ImportPath *string `json:"importPath,omitempty"`
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	ImportedFileChunkSize *int64 `json:"importedFileChunkSize,omitempty"`
+	// The Lustre logging configuration used when creating or updating an Amazon
+	// FSx for Lustre file system. An Amazon File Cache is created with Lustre logging
+	// enabled by default, with a setting of WARN_ERROR for the logging events.
+	// which can't be changed.
+	//
+	// Lustre logging writes the enabled logging events for your file system or
+	// cache to Amazon CloudWatch Logs.
+	LogConfiguration *LustreLogCreateConfiguration `json:"logConfiguration,omitempty"`
+	// The Lustre metadata performance configuration for the creation of an Amazon
+	// FSx for Lustre file system using a PERSISTENT_2 deployment type. The configuration
+	// uses a Metadata IOPS value to set the maximum rate of metadata disk IOPS
+	// supported by the file system.
+	//
+	// After creation, the file system supports increasing metadata performance.
+	// For more information on Metadata IOPS, see Lustre metadata performance configuration
+	// (https://docs.aws.amazon.com/fsx/latest/LustreGuide/managing-metadata-performance.html#metadata-configuration)
+	// in the Amazon FSx for Lustre User Guide.
+	MetadataConfiguration    *CreateFileSystemLustreMetadataConfiguration `json:"metadataConfiguration,omitempty"`
+	PerUnitStorageThroughput *int64                                       `json:"perUnitStorageThroughput,omitempty"`
+	// The configuration for Lustre root squash used to restrict root-level access
+	// from clients that try to access your FSx for Lustre file system as root.
+	// Use the RootSquash parameter to enable root squash. To learn more about Lustre
+	// root squash, see Lustre root squash (https://docs.aws.amazon.com/fsx/latest/LustreGuide/root-squash.html).
+	//
+	// You can also use the NoSquashNids parameter to provide an array of clients
+	// who are not affected by the root squash setting. These clients will access
+	// the file system as root, with unrestricted privileges.
+	RootSquashConfiguration *LustreRootSquashConfiguration `json:"rootSquashConfiguration,omitempty"`
+	ThroughputCapacity      *int64                         `json:"throughputCapacity,omitempty"`
+	// The preferred start time to perform weekly maintenance, formatted d:HH:MM
+	// in the UTC time zone, where d is the weekday number, from 1 through 7, beginning
+	// with Monday and ending with Sunday.
+	//
+	// For example, 1:05:00 specifies maintenance at 5 AM Monday.
+	WeeklyMaintenanceStartTime *string `json:"weeklyMaintenanceStartTime,omitempty"`
+}
+
+// The Lustre metadata performance configuration for the creation of an Amazon
+// FSx for Lustre file system using a PERSISTENT_2 deployment type. The configuration
+// uses a Metadata IOPS value to set the maximum rate of metadata disk IOPS
+// supported by the file system.
+//
+// After creation, the file system supports increasing metadata performance.
+// For more information on Metadata IOPS, see Lustre metadata performance configuration
+// (https://docs.aws.amazon.com/fsx/latest/LustreGuide/managing-metadata-performance.html#metadata-configuration)
+// in the Amazon FSx for Lustre User Guide.
+type CreateFileSystemLustreMetadataConfiguration struct {
+	IOPS *int64  `json:"iops,omitempty"`
+	Mode *string `json:"mode,omitempty"`
+}
+
+// The ONTAP configuration properties of the FSx for ONTAP file system that
+// you are creating.
+type CreateFileSystemOntapConfiguration struct {
+	// The number of days to retain automatic backups. Setting this property to
+	// 0 disables automatic backups. You can retain automatic backups for a maximum
+	// of 90 days. The default is 30.
+	AutomaticBackupRetentionDays *int64 `json:"automaticBackupRetentionDays,omitempty"`
+	// A recurring daily time, in the format HH:MM. HH is the zero-padded hour of
+	// the day (0-23), and MM is the zero-padded minute of the hour. For example,
+	// 05:00 specifies 5 AM daily.
+	DailyAutomaticBackupStartTime *string `json:"dailyAutomaticBackupStartTime,omitempty"`
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	DeploymentType *string `json:"deploymentType,omitempty"`
+	// The SSD IOPS (input/output operations per second) configuration for an Amazon
+	// FSx for NetApp ONTAP, Amazon FSx for Windows File Server, or FSx for OpenZFS
+	// file system. By default, Amazon FSx automatically provisions 3 IOPS per GB
+	// of storage capacity. You can provision additional IOPS per GB of storage.
+	// The configuration consists of the total number of provisioned SSD IOPS and
+	// how it is was provisioned, or the mode (by the customer or by Amazon FSx).
+	DiskIOPSConfiguration *DiskIOPSConfiguration `json:"diskIOPSConfiguration,omitempty"`
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	EndpointIPAddressRange   *string                         `json:"endpointIPAddressRange,omitempty"`
+	EndpointIPv6AddressRange *string                         `json:"endpointIPv6AddressRange,omitempty"`
+	FsxAdminPassword         *ackv1alpha1.SecretKeyReference `json:"fsxAdminPassword,omitempty"`
+	HAPairs                  *int64                          `json:"hAPairs,omitempty"`
+	// The ID for a subnet. A subnet is a range of IP addresses in your virtual
+	// private cloud (VPC). For more information, see VPC and subnets (https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Subnets.html)
+	// in the Amazon VPC User Guide.
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	PreferredSubnetID *string   `json:"preferredSubnetID,omitempty"`
+	RouteTableIDs     []*string `json:"routeTableIDs,omitempty"`
+	// The sustained throughput of an Amazon FSx file system in Megabytes per second
+	// (MBps).
+	ThroughputCapacity          *int64 `json:"throughputCapacity,omitempty"`
+	ThroughputCapacityPerHAPair *int64 `json:"throughputCapacityPerHAPair,omitempty"`
+	// The preferred start time to perform weekly maintenance, formatted d:HH:MM
+	// in the UTC time zone, where d is the weekday number, from 1 through 7, beginning
+	// with Monday and ending with Sunday.
+	//
+	// For example, 1:05:00 specifies maintenance at 5 AM Monday.
+	WeeklyMaintenanceStartTime *string `json:"weeklyMaintenanceStartTime,omitempty"`
+}
+
+// The Amazon FSx for OpenZFS configuration properties for the file system that
+// you are creating.
+type CreateFileSystemOpenZFSConfiguration struct {
+	// The number of days to retain automatic backups. Setting this property to
+	// 0 disables automatic backups. You can retain automatic backups for a maximum
+	// of 90 days. The default is 30.
+	AutomaticBackupRetentionDays *int64 `json:"automaticBackupRetentionDays,omitempty"`
+	CopyTagsToBackups            *bool  `json:"copyTagsToBackups,omitempty"`
+	CopyTagsToVolumes            *bool  `json:"copyTagsToVolumes,omitempty"`
+	// A recurring daily time, in the format HH:MM. HH is the zero-padded hour of
+	// the day (0-23), and MM is the zero-padded minute of the hour. For example,
+	// 05:00 specifies 5 AM daily.
+	DailyAutomaticBackupStartTime *string `json:"dailyAutomaticBackupStartTime,omitempty"`
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	DeploymentType *string `json:"deploymentType,omitempty"`
+	// The SSD IOPS (input/output operations per second) configuration for an Amazon
+	// FSx for NetApp ONTAP, Amazon FSx for Windows File Server, or FSx for OpenZFS
+	// file system. By default, Amazon FSx automatically provisions 3 IOPS per GB
+	// of storage capacity. You can provision additional IOPS per GB of storage.
+	// The configuration consists of the total number of provisioned SSD IOPS and
+	// how it is was provisioned, or the mode (by the customer or by Amazon FSx).
+	DiskIOPSConfiguration *DiskIOPSConfiguration `json:"diskIOPSConfiguration,omitempty"`
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	EndpointIPAddressRange   *string `json:"endpointIPAddressRange,omitempty"`
+	EndpointIPv6AddressRange *string `json:"endpointIPv6AddressRange,omitempty"`
+	// The ID for a subnet. A subnet is a range of IP addresses in your virtual
+	// private cloud (VPC). For more information, see VPC and subnets (https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Subnets.html)
+	// in the Amazon VPC User Guide.
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	PreferredSubnetID *string `json:"preferredSubnetID,omitempty"`
+	// The configuration for the optional provisioned SSD read cache on Amazon FSx
+	// for OpenZFS file systems that use the Intelligent-Tiering storage class.
+	ReadCacheConfiguration *OpenZFSReadCacheConfiguration `json:"readCacheConfiguration,omitempty"`
+	// The configuration of an Amazon FSx for OpenZFS root volume.
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	RootVolumeConfiguration *OpenZFSCreateRootVolumeConfiguration `json:"rootVolumeConfiguration,omitempty"`
+	RouteTableIDs           []*string                             `json:"routeTableIDs,omitempty"`
+	// The sustained throughput of an Amazon FSx file system in Megabytes per second
+	// (MBps).
+	ThroughputCapacity *int64 `json:"throughputCapacity,omitempty"`
+	// The preferred start time to perform weekly maintenance, formatted d:HH:MM
+	// in the UTC time zone, where d is the weekday number, from 1 through 7, beginning
+	// with Monday and ending with Sunday.
+	//
+	// For example, 1:05:00 specifies maintenance at 5 AM Monday.
+	WeeklyMaintenanceStartTime *string `json:"weeklyMaintenanceStartTime,omitempty"`
+}
+
+// The configuration object for the Microsoft Windows file system used in CreateFileSystem
+// and CreateFileSystemFromBackup operations.
+type CreateFileSystemWindowsConfiguration struct {
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	ActiveDirectoryID *string `json:"activeDirectoryID,omitempty"`
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	Aliases []*string `json:"aliases,omitempty"`
+	// The Windows file access auditing configuration used when creating or updating
+	// an Amazon FSx for Windows File Server file system.
+	AuditLogConfiguration *WindowsAuditLogCreateConfiguration `json:"auditLogConfiguration,omitempty"`
+	// The number of days to retain automatic backups. Setting this property to
+	// 0 disables automatic backups. You can retain automatic backups for a maximum
+	// of 90 days. The default is 30.
+	AutomaticBackupRetentionDays *int64 `json:"automaticBackupRetentionDays,omitempty"`
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	CopyTagsToBackups *bool `json:"copyTagsToBackups,omitempty"`
+	// A recurring daily time, in the format HH:MM. HH is the zero-padded hour of
+	// the day (0-23), and MM is the zero-padded minute of the hour. For example,
+	// 05:00 specifies 5 AM daily.
+	DailyAutomaticBackupStartTime *string `json:"dailyAutomaticBackupStartTime,omitempty"`
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	DeploymentType *string `json:"deploymentType,omitempty"`
+	// The SSD IOPS (input/output operations per second) configuration for an Amazon
+	// FSx for NetApp ONTAP, Amazon FSx for Windows File Server, or FSx for OpenZFS
+	// file system. By default, Amazon FSx automatically provisions 3 IOPS per GB
+	// of storage capacity. You can provision additional IOPS per GB of storage.
+	// The configuration consists of the total number of provisioned SSD IOPS and
+	// how it is was provisioned, or the mode (by the customer or by Amazon FSx).
+	DiskIOPSConfiguration *DiskIOPSConfiguration `json:"diskIOPSConfiguration,omitempty"`
+	// The File Server Resource Manager (FSRM) configuration that Amazon FSx for
+	// Windows File Server uses for the file system. When FSRM is enabled, you can
+	// manage and monitor storage quotas, file screening, storage reports, and file
+	// classification.
+	FsrmConfiguration *WindowsFsrmConfiguration `json:"fsrmConfiguration,omitempty"`
+	// The ID for a subnet. A subnet is a range of IP addresses in your virtual
+	// private cloud (VPC). For more information, see VPC and subnets (https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Subnets.html)
+	// in the Amazon VPC User Guide.
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	PreferredSubnetID *string `json:"preferredSubnetID,omitempty"`
+	// The configuration that Amazon FSx uses to join a FSx for Windows File Server
+	// file system or an FSx for ONTAP storage virtual machine (SVM) to a self-managed
+	// (including on-premises) Microsoft Active Directory (AD) directory. For more
+	// information, see Using Amazon FSx for Windows with your self-managed Microsoft
+	// Active Directory (https://docs.aws.amazon.com/fsx/latest/WindowsGuide/self-managed-AD.html)
+	// or Managing FSx for ONTAP SVMs (https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-svms.html).
+	SelfManagedActiveDirectoryConfiguration *SelfManagedActiveDirectoryConfiguration `json:"selfManagedActiveDirectoryConfiguration,omitempty"`
+	// The sustained throughput of an Amazon FSx file system in Megabytes per second
+	// (MBps).
+	ThroughputCapacity *int64 `json:"throughputCapacity,omitempty"`
+	// The preferred start time to perform weekly maintenance, formatted d:HH:MM
+	// in the UTC time zone, where d is the weekday number, from 1 through 7, beginning
+	// with Monday and ending with Sunday.
+	//
+	// For example, 1:05:00 specifies maintenance at 5 AM Monday.
+	WeeklyMaintenanceStartTime *string `json:"weeklyMaintenanceStartTime,omitempty"`
+}
+
+// Specifies the configuration of the ONTAP volume that you are creating.
+type CreateOntapVolumeConfiguration struct {
+	CopyTagsToBackups        *bool `json:"copyTagsToBackups,omitempty"`
+	StorageEfficiencyEnabled *bool `json:"storageEfficiencyEnabled,omitempty"`
+}
+
+// The snapshot configuration to use when creating an Amazon FSx for OpenZFS
+// volume from a snapshot.
+type CreateOpenZFSOriginSnapshotConfiguration struct {
+	// The Amazon Resource Name (ARN) for a given resource. ARNs uniquely identify
+	// Amazon Web Services resources. We require an ARN when you need to specify
+	// a resource unambiguously across all of Amazon Web Services. For more information,
+	// see Amazon Resource Names (ARNs) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
+	// in the Amazon Web Services General Reference.
+	SnapshotARN *string `json:"snapshotARN,omitempty"`
+}
+
+// Specifies the configuration of the Amazon FSx for OpenZFS volume that you
+// are creating.
+type CreateOpenZFSVolumeConfiguration struct {
+	CopyTagsToSnapshots *bool                      `json:"copyTagsToSnapshots,omitempty"`
+	DataCompressionType *string                    `json:"dataCompressionType,omitempty"`
+	NfsExports          []*OpenZFSNfsExport        `json:"nfsExports,omitempty"`
+	ParentVolumeID      *string                    `json:"parentVolumeID,omitempty"`
+	ReadOnly            *bool                      `json:"readOnly,omitempty"`
+	RecordSizeKiB       *int64                     `json:"recordSizeKiB,omitempty"`
+	UserAndGroupQuotas  []*OpenZFSUserOrGroupQuota `json:"userAndGroupQuotas,omitempty"`
+}
+
+// Defines the SnapLock configuration when creating an FSx for ONTAP SnapLock
+// volume.
+type CreateSnaplockConfiguration struct {
+	AuditLogVolume          *bool `json:"auditLogVolume,omitempty"`
+	VolumeAppendModeEnabled *bool `json:"volumeAppendModeEnabled,omitempty"`
+}
+
+// The configuration that Amazon FSx uses to join the ONTAP storage virtual
+// machine (SVM) to your self-managed (including on-premises) Microsoft Active
+// Directory directory.
+type CreateSvmActiveDirectoryConfiguration struct {
+	// The configuration that Amazon FSx uses to join a FSx for Windows File Server
+	// file system or an FSx for ONTAP storage virtual machine (SVM) to a self-managed
+	// (including on-premises) Microsoft Active Directory (AD) directory. For more
+	// information, see Using Amazon FSx for Windows with your self-managed Microsoft
+	// Active Directory (https://docs.aws.amazon.com/fsx/latest/WindowsGuide/self-managed-AD.html)
+	// or Managing FSx for ONTAP SVMs (https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-svms.html).
+	SelfManagedActiveDirectoryConfiguration *SelfManagedActiveDirectoryConfiguration `json:"selfManagedActiveDirectoryConfiguration,omitempty"`
+}
+
+// The configuration of a data repository association that links an Amazon FSx
+// for Lustre file system to an Amazon S3 bucket or an Amazon File Cache resource
+// to an Amazon S3 bucket or an NFS file system. The data repository association
+// configuration object is returned in the response of the following operations:
+//
+//   - CreateDataRepositoryAssociation
+//
+//   - UpdateDataRepositoryAssociation
+//
+//   - DescribeDataRepositoryAssociations
+//
+// Data repository associations are supported on Amazon File Cache resources
+// and all FSx for Lustre 2.12 and 2.15 file systems, excluding Intelligent-Tiering
+// and scratch_1 file systems.
+type DataRepositoryAssociation struct {
+	// The time that the resource was created, in seconds (since 1970-01-01T00:00:00Z),
+	// also known as Unix time.
+	CreationTime       *metav1.Time `json:"creationTime,omitempty"`
+	DataRepositoryPath *string      `json:"dataRepositoryPath,omitempty"`
+	// Provides detailed information about the data repository if its Lifecycle
+	// is set to MISCONFIGURED or FAILED.
+	FailureDetails *DataRepositoryFailureDetails `json:"failureDetails,omitempty"`
+	// The globally unique ID of the file system, assigned by Amazon FSx.
+	FileSystemID          *string `json:"fileSystemID,omitempty"`
+	ImportedFileChunkSize *int64  `json:"importedFileChunkSize,omitempty"`
+	Lifecycle             *string `json:"lifecycle,omitempty"`
+	// The Amazon Resource Name (ARN) for a given resource. ARNs uniquely identify
+	// Amazon Web Services resources. We require an ARN when you need to specify
+	// a resource unambiguously across all of Amazon Web Services. For more information,
+	// see Amazon Resource Names (ARNs) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
+	// in the Amazon Web Services General Reference.
+	ResourceARN *string `json:"resourceARN,omitempty"`
+	// A list of Tag values, with a maximum of 50 elements.
+	Tags []*Tag `json:"tags,omitempty"`
+}
+
+// The data repository configuration object for Lustre file systems returned
+// in the response of the CreateFileSystem operation.
+//
+// This data type is not supported on file systems with a data repository association.
+// For file systems with a data repository association, see .
+type DataRepositoryConfiguration struct {
+	AutoImportPolicy *string `json:"autoImportPolicy,omitempty"`
+	ExportPath       *string `json:"exportPath,omitempty"`
+	// Provides detailed information about the data repository if its Lifecycle
+	// is set to MISCONFIGURED or FAILED.
+	FailureDetails        *DataRepositoryFailureDetails `json:"failureDetails,omitempty"`
+	ImportPath            *string                       `json:"importPath,omitempty"`
+	ImportedFileChunkSize *int64                        `json:"importedFileChunkSize,omitempty"`
+	Lifecycle             *string                       `json:"lifecycle,omitempty"`
+}
+
+// Provides detailed information about the data repository if its Lifecycle
+// is set to MISCONFIGURED or FAILED.
+type DataRepositoryFailureDetails struct {
+	// A detailed error message.
+	Message *string `json:"message,omitempty"`
+}
+
+// A description of the data repository task.
+//
+//   - You use import and export data repository tasks to perform bulk transfer
+//     operations between an Amazon FSx for Lustre file system and a linked data
+//     repository.
+//
+//   - You use release data repository tasks to release files that have been
+//     exported to a linked S3 bucket from your Amazon FSx for Lustre file system.
+//
+//   - An Amazon File Cache resource uses a task to automatically release files
+//     from the cache.
+//
+// To learn more about data repository tasks, see Data Repository Tasks (https://docs.aws.amazon.com/fsx/latest/LustreGuide/data-repository-tasks.html).
+type DataRepositoryTask struct {
+	// The time that the resource was created, in seconds (since 1970-01-01T00:00:00Z),
+	// also known as Unix time.
+	CreationTime *metav1.Time `json:"creationTime,omitempty"`
+	// The globally unique ID of the file system, assigned by Amazon FSx.
+	FileSystemID *string `json:"fileSystemID,omitempty"`
+	// The Amazon Resource Name (ARN) for a given resource. ARNs uniquely identify
+	// Amazon Web Services resources. We require an ARN when you need to specify
+	// a resource unambiguously across all of Amazon Web Services. For more information,
+	// see Amazon Resource Names (ARNs) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
+	// in the Amazon Web Services General Reference.
+	ResourceARN *string `json:"resourceARN,omitempty"`
+	// A list of Tag values, with a maximum of 50 elements.
+	Tags []*Tag `json:"tags,omitempty"`
+}
+
+// Provides information about why a data repository task failed. Only populated
+// when the task Lifecycle is set to FAILED.
+type DataRepositoryTaskFailureDetails struct {
+	// A detailed error message.
+	Message *string `json:"message,omitempty"`
+}
+
+// The configuration object for the Amazon FSx for Lustre file system being
+// deleted in the DeleteFileSystem operation.
+type DeleteFileSystemLustreConfiguration struct {
+	// A list of Tag values, with a maximum of 50 elements.
+	FinalBackupTags []*Tag `json:"finalBackupTags,omitempty"`
+	SkipFinalBackup *bool  `json:"skipFinalBackup,omitempty"`
+}
+
+// The response object for the Amazon FSx for Lustre file system being deleted
+// in the DeleteFileSystem operation.
+type DeleteFileSystemLustreResponse struct {
+	// The ID of the source backup. Specifies the backup that you are copying.
+	FinalBackupID *string `json:"finalBackupID,omitempty"`
+	// A list of Tag values, with a maximum of 50 elements.
+	FinalBackupTags []*Tag `json:"finalBackupTags,omitempty"`
+}
+
+// The configuration object for the Amazon FSx for OpenZFS file system used
+// in the DeleteFileSystem operation.
+type DeleteFileSystemOpenZFSConfiguration struct {
+	// A list of Tag values, with a maximum of 50 elements.
+	FinalBackupTags []*Tag `json:"finalBackupTags,omitempty"`
+	SkipFinalBackup *bool  `json:"skipFinalBackup,omitempty"`
+}
+
+// The response object for the Amazon FSx for OpenZFS file system that's being
+// deleted in the DeleteFileSystem operation.
+type DeleteFileSystemOpenZFSResponse struct {
+	// The ID of the source backup. Specifies the backup that you are copying.
+	FinalBackupID *string `json:"finalBackupID,omitempty"`
+	// A list of Tag values, with a maximum of 50 elements.
+	FinalBackupTags []*Tag `json:"finalBackupTags,omitempty"`
+}
+
+// The configuration object for the Microsoft Windows file system used in the
+// DeleteFileSystem operation.
+type DeleteFileSystemWindowsConfiguration struct {
+	// A list of Tag values, with a maximum of 50 elements.
+	FinalBackupTags []*Tag `json:"finalBackupTags,omitempty"`
+	SkipFinalBackup *bool  `json:"skipFinalBackup,omitempty"`
+}
+
+// The response object for the Microsoft Windows file system used in the DeleteFileSystem
+// operation.
+type DeleteFileSystemWindowsResponse struct {
+	// The ID of the source backup. Specifies the backup that you are copying.
+	FinalBackupID *string `json:"finalBackupID,omitempty"`
+	// A list of Tag values, with a maximum of 50 elements.
+	FinalBackupTags []*Tag `json:"finalBackupTags,omitempty"`
+}
+
+// Use to specify skipping a final backup, adding tags to a final backup, or
+// bypassing the retention period of an FSx for ONTAP SnapLock Enterprise volume
+// when deleting an FSx for ONTAP volume.
+type DeleteVolumeOntapConfiguration struct {
+	BypassSnaplockEnterpriseRetention *bool `json:"bypassSnaplockEnterpriseRetention,omitempty"`
+	// A list of Tag values, with a maximum of 50 elements.
+	FinalBackupTags []*Tag `json:"finalBackupTags,omitempty"`
+	SkipFinalBackup *bool  `json:"skipFinalBackup,omitempty"`
+}
+
+// The response object for the Amazon FSx for NetApp ONTAP volume being deleted
+// in the DeleteVolume operation.
+type DeleteVolumeOntapResponse struct {
+	// The ID of the source backup. Specifies the backup that you are copying.
+	FinalBackupID *string `json:"finalBackupID,omitempty"`
+	// A list of Tag values, with a maximum of 50 elements.
+	FinalBackupTags []*Tag `json:"finalBackupTags,omitempty"`
+}
+
+// The SSD IOPS (input/output operations per second) configuration for an Amazon
+// FSx for NetApp ONTAP, Amazon FSx for Windows File Server, or FSx for OpenZFS
+// file system. By default, Amazon FSx automatically provisions 3 IOPS per GB
+// of storage capacity. You can provision additional IOPS per GB of storage.
+// The configuration consists of the total number of provisioned SSD IOPS and
+// how it is was provisioned, or the mode (by the customer or by Amazon FSx).
+type DiskIOPSConfiguration struct {
+	IOPS *int64  `json:"iops,omitempty"`
+	Mode *string `json:"mode,omitempty"`
+}
+
+// A description of a specific Amazon File Cache resource, which is a response
+// object from the DescribeFileCaches operation.
+type FileCache struct {
+	// The time that the resource was created, in seconds (since 1970-01-01T00:00:00Z),
+	// also known as Unix time.
+	CreationTime *metav1.Time `json:"creationTime,omitempty"`
+	// The file system's DNS name. You can mount your file system using its DNS
+	// name.
+	DNSName              *string `json:"dnsName,omitempty"`
+	FileCacheTypeVersion *string `json:"fileCacheTypeVersion,omitempty"`
+	// Specifies the ID of the Key Management Service (KMS) key to use for encrypting
+	// data on Amazon FSx file systems, as follows:
+	//
+	//    * Amazon FSx for Lustre PERSISTENT_1 and PERSISTENT_2 deployment types
+	//    only. SCRATCH_1 and SCRATCH_2 types are encrypted using the Amazon FSx
+	//    service KMS key for your account.
+	//
+	//    * Amazon FSx for NetApp ONTAP
+	//
+	//    * Amazon FSx for OpenZFS
+	//
+	//    * Amazon FSx for Windows File Server
+	//
+	// If a KmsKeyId isn't specified, the Amazon FSx-managed KMS key for your account
+	// is used. For more information, see Encrypt (https://docs.aws.amazon.com/kms/latest/APIReference/API_Encrypt.html)
+	// in the Key Management Service API Reference.
+	KMSKeyID *string `json:"kmsKeyID,omitempty"`
+	// A list of network interface IDs.
+	NetworkInterfaceIDs []*string `json:"networkInterfaceIDs,omitempty"`
+	// An Amazon Web Services account ID. This ID is a 12-digit number that you
+	// use to construct Amazon Resource Names (ARNs) for resources.
+	OwnerID *string `json:"ownerID,omitempty"`
+	// The Amazon Resource Name (ARN) for a given resource. ARNs uniquely identify
+	// Amazon Web Services resources. We require an ARN when you need to specify
+	// a resource unambiguously across all of Amazon Web Services. For more information,
+	// see Amazon Resource Names (ARNs) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
+	// in the Amazon Web Services General Reference.
+	ResourceARN *string `json:"resourceARN,omitempty"`
+	// Specifies the file system's storage capacity, in gibibytes (GiB).
+	StorageCapacity *int64 `json:"storageCapacity,omitempty"`
+	// A list of subnet IDs that the cache will be accessible from. You can specify
+	// only one subnet ID in a call to the CreateFileCache operation.
+	SubnetIDs []*string `json:"subnetIDs,omitempty"`
+	// The ID of your virtual private cloud (VPC). For more information, see VPC
+	// and subnets (https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Subnets.html)
+	// in the Amazon VPC User Guide.
+	VPCID *string `json:"vpcID,omitempty"`
+}
+
+// The response object for the Amazon File Cache resource being created in the
+// CreateFileCache operation.
+type FileCacheCreating struct {
+	// The time that the resource was created, in seconds (since 1970-01-01T00:00:00Z),
+	// also known as Unix time.
+	CreationTime *metav1.Time `json:"creationTime,omitempty"`
+	// The file system's DNS name. You can mount your file system using its DNS
+	// name.
+	DNSName              *string `json:"dnsName,omitempty"`
+	FileCacheTypeVersion *string `json:"fileCacheTypeVersion,omitempty"`
+	// Specifies the ID of the Key Management Service (KMS) key to use for encrypting
+	// data on Amazon FSx file systems, as follows:
+	//
+	//    * Amazon FSx for Lustre PERSISTENT_1 and PERSISTENT_2 deployment types
+	//    only. SCRATCH_1 and SCRATCH_2 types are encrypted using the Amazon FSx
+	//    service KMS key for your account.
+	//
+	//    * Amazon FSx for NetApp ONTAP
+	//
+	//    * Amazon FSx for OpenZFS
+	//
+	//    * Amazon FSx for Windows File Server
+	//
+	// If a KmsKeyId isn't specified, the Amazon FSx-managed KMS key for your account
+	// is used. For more information, see Encrypt (https://docs.aws.amazon.com/kms/latest/APIReference/API_Encrypt.html)
+	// in the Key Management Service API Reference.
+	KMSKeyID *string `json:"kmsKeyID,omitempty"`
+	// A list of network interface IDs.
+	NetworkInterfaceIDs []*string `json:"networkInterfaceIDs,omitempty"`
+	// An Amazon Web Services account ID. This ID is a 12-digit number that you
+	// use to construct Amazon Resource Names (ARNs) for resources.
+	OwnerID *string `json:"ownerID,omitempty"`
+	// The Amazon Resource Name (ARN) for a given resource. ARNs uniquely identify
+	// Amazon Web Services resources. We require an ARN when you need to specify
+	// a resource unambiguously across all of Amazon Web Services. For more information,
+	// see Amazon Resource Names (ARNs) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
+	// in the Amazon Web Services General Reference.
+	ResourceARN *string `json:"resourceARN,omitempty"`
+	// Specifies the file system's storage capacity, in gibibytes (GiB).
+	StorageCapacity *int64 `json:"storageCapacity,omitempty"`
+	// A list of subnet IDs that the cache will be accessible from. You can specify
+	// only one subnet ID in a call to the CreateFileCache operation.
+	SubnetIDs []*string `json:"subnetIDs,omitempty"`
+	// A list of Tag values, with a maximum of 50 elements.
+	Tags []*Tag `json:"tags,omitempty"`
+	// The ID of your virtual private cloud (VPC). For more information, see VPC
+	// and subnets (https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Subnets.html)
+	// in the Amazon VPC User Guide.
+	VPCID *string `json:"vpcID,omitempty"`
+}
+
+// The configuration for a data repository association (DRA) to be created during
+// the Amazon File Cache resource creation. The DRA links the cache to either
+// an Amazon S3 bucket or prefix, or a Network File System (NFS) data repository
+// that supports the NFSv3 protocol.
+//
+// The DRA does not support automatic import or automatic export.
+type FileCacheDataRepositoryAssociation struct {
+	DataRepositoryPath *string `json:"dataRepositoryPath,omitempty"`
+}
+
+// A structure providing details of any failures that occurred.
+type FileCacheFailureDetails struct {
+	// A detailed error message.
+	Message *string `json:"message,omitempty"`
+}
+
+// The configuration for the Amazon File Cache resource.
+type FileCacheLustreConfiguration struct {
+	// The configuration for Lustre logging used to write the enabled logging events
+	// for your Amazon FSx for Lustre file system or Amazon File Cache resource
+	// to Amazon CloudWatch Logs.
+	LogConfiguration         *LustreLogConfiguration `json:"logConfiguration,omitempty"`
+	MountName                *string                 `json:"mountName,omitempty"`
+	PerUnitStorageThroughput *int64                  `json:"perUnitStorageThroughput,omitempty"`
+	// The preferred start time to perform weekly maintenance, formatted d:HH:MM
+	// in the UTC time zone, where d is the weekday number, from 1 through 7, beginning
+	// with Monday and ending with Sunday.
+	//
+	// For example, 1:05:00 specifies maintenance at 5 AM Monday.
+	WeeklyMaintenanceStartTime *string `json:"weeklyMaintenanceStartTime,omitempty"`
+}
+
+// An Amazon FSx for NetApp ONTAP file system has two endpoints that are used
+// to access data or to manage the file system using the NetApp ONTAP CLI, REST
+// API, or NetApp SnapMirror. They are the Management and Intercluster endpoints.
+type FileSystemEndpoint struct {
+	// The file system's DNS name. You can mount your file system using its DNS
+	// name.
+	DNSName       *string   `json:"dnsName,omitempty"`
+	IPAddresses   []*string `json:"ipAddresses,omitempty"`
+	IPv6Addresses []*string `json:"ipv6Addresses,omitempty"`
+}
+
+// An Amazon FSx for NetApp ONTAP file system has the following endpoints that
+// are used to access data or to manage the file system using the NetApp ONTAP
+// CLI, REST API, or NetApp SnapMirror.
+type FileSystemEndpoints struct {
+	// An Amazon FSx for NetApp ONTAP file system has two endpoints that are used
+	// to access data or to manage the file system using the NetApp ONTAP CLI, REST
+	// API, or NetApp SnapMirror. They are the Management and Intercluster endpoints.
+	Intercluster *FileSystemEndpoint `json:"intercluster,omitempty"`
+	// An Amazon FSx for NetApp ONTAP file system has two endpoints that are used
+	// to access data or to manage the file system using the NetApp ONTAP CLI, REST
+	// API, or NetApp SnapMirror. They are the Management and Intercluster endpoints.
+	Management *FileSystemEndpoint `json:"management,omitempty"`
+}
+
+// A structure providing details of any failures that occurred.
+type FileSystemFailureDetails struct {
+	// A detailed error message.
+	Message *string `json:"message,omitempty"`
+}
+
+// The Lustre metadata performance configuration of an Amazon FSx for Lustre
+// file system using a PERSISTENT_2 deployment type. The configuration enables
+// the file system to support increasing metadata performance.
+type FileSystemLustreMetadataConfiguration struct {
+	IOPS *int64  `json:"iops,omitempty"`
+	Mode *string `json:"mode,omitempty"`
+}
+
+// A description of a specific Amazon FSx file system.
+type FileSystem_SDK struct {
+	// The time that the resource was created, in seconds (since 1970-01-01T00:00:00Z),
+	// also known as Unix time.
+	CreationTime *metav1.Time `json:"creationTime,omitempty"`
+	// The file system's DNS name. You can mount your file system using its DNS
+	// name.
+	DNSName *string `json:"dnsName,omitempty"`
+	// A structure providing details of any failures that occurred.
+	FailureDetails *FileSystemFailureDetails `json:"failureDetails,omitempty"`
+	// The globally unique ID of the file system, assigned by Amazon FSx.
+	FileSystemID *string `json:"fileSystemID,omitempty"`
+	// The type of Amazon FSx file system.
+	FileSystemType        *string `json:"fileSystemType,omitempty"`
+	FileSystemTypeVersion *string `json:"fileSystemTypeVersion,omitempty"`
+	// Specifies the ID of the Key Management Service (KMS) key to use for encrypting
+	// data on Amazon FSx file systems, as follows:
+	//
+	//    * Amazon FSx for Lustre PERSISTENT_1 and PERSISTENT_2 deployment types
+	//    only. SCRATCH_1 and SCRATCH_2 types are encrypted using the Amazon FSx
+	//    service KMS key for your account.
+	//
+	//    * Amazon FSx for NetApp ONTAP
+	//
+	//    * Amazon FSx for OpenZFS
+	//
+	//    * Amazon FSx for Windows File Server
+	//
+	// If a KmsKeyId isn't specified, the Amazon FSx-managed KMS key for your account
+	// is used. For more information, see Encrypt (https://docs.aws.amazon.com/kms/latest/APIReference/API_Encrypt.html)
+	// in the Key Management Service API Reference.
+	KMSKeyID *string `json:"kmsKeyID,omitempty"`
+	// The lifecycle status of the file system.
+	Lifecycle *string `json:"lifecycle,omitempty"`
+	// The configuration for the Amazon FSx for Lustre file system.
+	LustreConfiguration *LustreFileSystemConfiguration `json:"lustreConfiguration,omitempty"`
+	// A list of network interface IDs.
+	NetworkInterfaceIDs []*string `json:"networkInterfaceIDs,omitempty"`
+	NetworkType         *string   `json:"networkType,omitempty"`
+	// Configuration for the FSx for NetApp ONTAP file system.
+	OntapConfiguration *OntapFileSystemConfiguration `json:"ontapConfiguration,omitempty"`
+	// The configuration for the Amazon FSx for OpenZFS file system.
+	OpenZFSConfiguration *OpenZFSFileSystemConfiguration `json:"openZFSConfiguration,omitempty"`
+	// An Amazon Web Services account ID. This ID is a 12-digit number that you
+	// use to construct Amazon Resource Names (ARNs) for resources.
+	OwnerID *string `json:"ownerID,omitempty"`
+	// The Amazon Resource Name (ARN) for a given resource. ARNs uniquely identify
+	// Amazon Web Services resources. We require an ARN when you need to specify
+	// a resource unambiguously across all of Amazon Web Services. For more information,
+	// see Amazon Resource Names (ARNs) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
+	// in the Amazon Web Services General Reference.
+	ResourceARN *string `json:"resourceARN,omitempty"`
+	// Specifies the file system's storage capacity, in gibibytes (GiB).
+	StorageCapacity *int64 `json:"storageCapacity,omitempty"`
+	// Specifies the file system's storage type.
+	StorageType *string `json:"storageType,omitempty"`
+	// A list of subnet IDs that the cache will be accessible from. You can specify
+	// only one subnet ID in a call to the CreateFileCache operation.
+	SubnetIDs []*string `json:"subnetIDs,omitempty"`
+	// A list of Tag values, with a maximum of 50 elements.
+	Tags []*Tag `json:"tags,omitempty"`
+	// The ID of your virtual private cloud (VPC). For more information, see VPC
+	// and subnets (https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Subnets.html)
+	// in the Amazon VPC User Guide.
+	VPCID *string `json:"vpcID,omitempty"`
+	// The configuration for this Microsoft Windows file system.
+	WindowsConfiguration *WindowsFileSystemConfiguration `json:"windowsConfiguration,omitempty"`
+}
+
+// Describes why a resource lifecycle state changed.
+type LifecycleTransitionReason struct {
+	// A detailed error message.
+	Message *string `json:"message,omitempty"`
+}
+
+// The configuration for the Amazon FSx for Lustre file system.
+type LustreFileSystemConfiguration struct {
+	// The number of days to retain automatic backups. Setting this property to
+	// 0 disables automatic backups. You can retain automatic backups for a maximum
+	// of 90 days. The default is 30.
+	AutomaticBackupRetentionDays *int64 `json:"automaticBackupRetentionDays,omitempty"`
+	CopyTagsToBackups            *bool  `json:"copyTagsToBackups,omitempty"`
+	// A recurring daily time, in the format HH:MM. HH is the zero-padded hour of
+	// the day (0-23), and MM is the zero-padded minute of the hour. For example,
+	// 05:00 specifies 5 AM daily.
+	DailyAutomaticBackupStartTime *string `json:"dailyAutomaticBackupStartTime,omitempty"`
+	DataCompressionType           *string `json:"dataCompressionType,omitempty"`
+	// The configuration for the optional provisioned SSD read cache on Amazon FSx
+	// for Lustre file systems that use the Intelligent-Tiering storage class.
+	DataReadCacheConfiguration *LustreReadCacheConfiguration `json:"dataReadCacheConfiguration,omitempty"`
+	// The data repository configuration object for Lustre file systems returned
+	// in the response of the CreateFileSystem operation.
+	//
+	// This data type is not supported on file systems with a data repository association.
+	// For file systems with a data repository association, see .
+	DataRepositoryConfiguration *DataRepositoryConfiguration `json:"dataRepositoryConfiguration,omitempty"`
+	DeploymentType              *string                      `json:"deploymentType,omitempty"`
+	DriveCacheType              *string                      `json:"driveCacheType,omitempty"`
+	EfaEnabled                  *bool                        `json:"efaEnabled,omitempty"`
+	// The configuration for Lustre logging used to write the enabled logging events
+	// for your Amazon FSx for Lustre file system or Amazon File Cache resource
+	// to Amazon CloudWatch Logs.
+	LogConfiguration *LustreLogConfiguration `json:"logConfiguration,omitempty"`
+	// The Lustre metadata performance configuration of an Amazon FSx for Lustre
+	// file system using a PERSISTENT_2 deployment type. The configuration enables
+	// the file system to support increasing metadata performance.
+	MetadataConfiguration    *FileSystemLustreMetadataConfiguration `json:"metadataConfiguration,omitempty"`
+	MountName                *string                                `json:"mountName,omitempty"`
+	PerUnitStorageThroughput *int64                                 `json:"perUnitStorageThroughput,omitempty"`
+	// The configuration for Lustre root squash used to restrict root-level access
+	// from clients that try to access your FSx for Lustre file system as root.
+	// Use the RootSquash parameter to enable root squash. To learn more about Lustre
+	// root squash, see Lustre root squash (https://docs.aws.amazon.com/fsx/latest/LustreGuide/root-squash.html).
+	//
+	// You can also use the NoSquashNids parameter to provide an array of clients
+	// who are not affected by the root squash setting. These clients will access
+	// the file system as root, with unrestricted privileges.
+	RootSquashConfiguration *LustreRootSquashConfiguration `json:"rootSquashConfiguration,omitempty"`
+	ThroughputCapacity      *int64                         `json:"throughputCapacity,omitempty"`
+	// The preferred start time to perform weekly maintenance, formatted d:HH:MM
+	// in the UTC time zone, where d is the weekday number, from 1 through 7, beginning
+	// with Monday and ending with Sunday.
+	//
+	// For example, 1:05:00 specifies maintenance at 5 AM Monday.
+	WeeklyMaintenanceStartTime *string `json:"weeklyMaintenanceStartTime,omitempty"`
+}
+
+// The configuration for Lustre logging used to write the enabled logging events
+// for your Amazon FSx for Lustre file system or Amazon File Cache resource
+// to Amazon CloudWatch Logs.
+type LustreLogConfiguration struct {
+	Destination *string `json:"destination,omitempty"`
+	Level       *string `json:"level,omitempty"`
+}
+
+// The Lustre logging configuration used when creating or updating an Amazon
+// FSx for Lustre file system. An Amazon File Cache is created with Lustre logging
+// enabled by default, with a setting of WARN_ERROR for the logging events.
+// which can't be changed.
+//
+// Lustre logging writes the enabled logging events for your file system or
+// cache to Amazon CloudWatch Logs.
+type LustreLogCreateConfiguration struct {
+	Destination *string `json:"destination,omitempty"`
+	Level       *string `json:"level,omitempty"`
+}
+
+// The configuration for the optional provisioned SSD read cache on Amazon FSx
+// for Lustre file systems that use the Intelligent-Tiering storage class.
+type LustreReadCacheConfiguration struct {
+	// Specifies the file system's storage capacity, in gibibytes (GiB).
+	SizeGiB    *int64  `json:"sizeGiB,omitempty"`
+	SizingMode *string `json:"sizingMode,omitempty"`
+}
+
+// The configuration for Lustre root squash used to restrict root-level access
+// from clients that try to access your FSx for Lustre file system as root.
+// Use the RootSquash parameter to enable root squash. To learn more about Lustre
+// root squash, see Lustre root squash (https://docs.aws.amazon.com/fsx/latest/LustreGuide/root-squash.html).
+//
+// You can also use the NoSquashNids parameter to provide an array of clients
+// who are not affected by the root squash setting. These clients will access
+// the file system as root, with unrestricted privileges.
+type LustreRootSquashConfiguration struct {
+	NoSquashNids []*string `json:"noSquashNids,omitempty"`
+	RootSquash   *string   `json:"rootSquash,omitempty"`
+}
+
+// Configuration for the FSx for NetApp ONTAP file system.
+type OntapFileSystemConfiguration struct {
+	// The number of days to retain automatic backups. Setting this property to
+	// 0 disables automatic backups. You can retain automatic backups for a maximum
+	// of 90 days. The default is 30.
+	AutomaticBackupRetentionDays *int64 `json:"automaticBackupRetentionDays,omitempty"`
+	// A recurring daily time, in the format HH:MM. HH is the zero-padded hour of
+	// the day (0-23), and MM is the zero-padded minute of the hour. For example,
+	// 05:00 specifies 5 AM daily.
+	DailyAutomaticBackupStartTime *string `json:"dailyAutomaticBackupStartTime,omitempty"`
+	DeploymentType                *string `json:"deploymentType,omitempty"`
+	// The SSD IOPS (input/output operations per second) configuration for an Amazon
+	// FSx for NetApp ONTAP, Amazon FSx for Windows File Server, or FSx for OpenZFS
+	// file system. By default, Amazon FSx automatically provisions 3 IOPS per GB
+	// of storage capacity. You can provision additional IOPS per GB of storage.
+	// The configuration consists of the total number of provisioned SSD IOPS and
+	// how it is was provisioned, or the mode (by the customer or by Amazon FSx).
+	DiskIOPSConfiguration    *DiskIOPSConfiguration `json:"diskIOPSConfiguration,omitempty"`
+	EndpointIPAddressRange   *string                `json:"endpointIPAddressRange,omitempty"`
+	EndpointIPv6AddressRange *string                `json:"endpointIPv6AddressRange,omitempty"`
+	// An Amazon FSx for NetApp ONTAP file system has the following endpoints that
+	// are used to access data or to manage the file system using the NetApp ONTAP
+	// CLI, REST API, or NetApp SnapMirror.
+	Endpoints        *FileSystemEndpoints `json:"endpoints,omitempty"`
+	FsxAdminPassword *string              `json:"fsxAdminPassword,omitempty"`
+	HAPairs          *int64               `json:"hAPairs,omitempty"`
+	// The ID for a subnet. A subnet is a range of IP addresses in your virtual
+	// private cloud (VPC). For more information, see VPC and subnets (https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Subnets.html)
+	// in the Amazon VPC User Guide.
+	PreferredSubnetID *string   `json:"preferredSubnetID,omitempty"`
+	RouteTableIDs     []*string `json:"routeTableIDs,omitempty"`
+	// The sustained throughput of an Amazon FSx file system in Megabytes per second
+	// (MBps).
+	ThroughputCapacity          *int64 `json:"throughputCapacity,omitempty"`
+	ThroughputCapacityPerHAPair *int64 `json:"throughputCapacityPerHAPair,omitempty"`
+	// The preferred start time to perform weekly maintenance, formatted d:HH:MM
+	// in the UTC time zone, where d is the weekday number, from 1 through 7, beginning
+	// with Monday and ending with Sunday.
+	//
+	// For example, 1:05:00 specifies maintenance at 5 AM Monday.
+	WeeklyMaintenanceStartTime *string `json:"weeklyMaintenanceStartTime,omitempty"`
+}
+
+// The configuration of an Amazon FSx for NetApp ONTAP volume.
+type OntapVolumeConfiguration struct {
+	CopyTagsToBackups         *bool `json:"copyTagsToBackups,omitempty"`
+	StorageEfficiencyEnabled  *bool `json:"storageEfficiencyEnabled,omitempty"`
+	StorageVirtualMachineRoot *bool `json:"storageVirtualMachineRoot,omitempty"`
+}
+
+// Specifies who can mount an OpenZFS file system and the options available
+// while mounting the file system.
+type OpenZFSClientConfiguration struct {
+	Clients *string   `json:"clients,omitempty"`
+	Options []*string `json:"options,omitempty"`
+}
+
+// The configuration of an Amazon FSx for OpenZFS root volume.
+type OpenZFSCreateRootVolumeConfiguration struct {
+	CopyTagsToSnapshots *bool                      `json:"copyTagsToSnapshots,omitempty"`
+	DataCompressionType *string                    `json:"dataCompressionType,omitempty"`
+	NfsExports          []*OpenZFSNfsExport        `json:"nfsExports,omitempty"`
+	ReadOnly            *bool                      `json:"readOnly,omitempty"`
+	RecordSizeKiB       *int64                     `json:"recordSizeKiB,omitempty"`
+	UserAndGroupQuotas  []*OpenZFSUserOrGroupQuota `json:"userAndGroupQuotas,omitempty"`
+}
+
+// The configuration for the Amazon FSx for OpenZFS file system.
+type OpenZFSFileSystemConfiguration struct {
+	// The number of days to retain automatic backups. Setting this property to
+	// 0 disables automatic backups. You can retain automatic backups for a maximum
+	// of 90 days. The default is 30.
+	AutomaticBackupRetentionDays *int64 `json:"automaticBackupRetentionDays,omitempty"`
+	CopyTagsToBackups            *bool  `json:"copyTagsToBackups,omitempty"`
+	CopyTagsToVolumes            *bool  `json:"copyTagsToVolumes,omitempty"`
+	// A recurring daily time, in the format HH:MM. HH is the zero-padded hour of
+	// the day (0-23), and MM is the zero-padded minute of the hour. For example,
+	// 05:00 specifies 5 AM daily.
+	DailyAutomaticBackupStartTime *string `json:"dailyAutomaticBackupStartTime,omitempty"`
+	DeploymentType                *string `json:"deploymentType,omitempty"`
+	// The SSD IOPS (input/output operations per second) configuration for an Amazon
+	// FSx for NetApp ONTAP, Amazon FSx for Windows File Server, or FSx for OpenZFS
+	// file system. By default, Amazon FSx automatically provisions 3 IOPS per GB
+	// of storage capacity. You can provision additional IOPS per GB of storage.
+	// The configuration consists of the total number of provisioned SSD IOPS and
+	// how it is was provisioned, or the mode (by the customer or by Amazon FSx).
+	DiskIOPSConfiguration    *DiskIOPSConfiguration `json:"diskIOPSConfiguration,omitempty"`
+	EndpointIPAddress        *string                `json:"endpointIPAddress,omitempty"`
+	EndpointIPAddressRange   *string                `json:"endpointIPAddressRange,omitempty"`
+	EndpointIPv6Address      *string                `json:"endpointIPv6Address,omitempty"`
+	EndpointIPv6AddressRange *string                `json:"endpointIPv6AddressRange,omitempty"`
+	// The ID for a subnet. A subnet is a range of IP addresses in your virtual
+	// private cloud (VPC). For more information, see VPC and subnets (https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Subnets.html)
+	// in the Amazon VPC User Guide.
+	PreferredSubnetID *string `json:"preferredSubnetID,omitempty"`
+	// The configuration for the optional provisioned SSD read cache on Amazon FSx
+	// for OpenZFS file systems that use the Intelligent-Tiering storage class.
+	ReadCacheConfiguration *OpenZFSReadCacheConfiguration `json:"readCacheConfiguration,omitempty"`
+	RootVolumeID           *string                        `json:"rootVolumeID,omitempty"`
+	RouteTableIDs          []*string                      `json:"routeTableIDs,omitempty"`
+	// The sustained throughput of an Amazon FSx file system in Megabytes per second
+	// (MBps).
+	ThroughputCapacity *int64 `json:"throughputCapacity,omitempty"`
+	// The preferred start time to perform weekly maintenance, formatted d:HH:MM
+	// in the UTC time zone, where d is the weekday number, from 1 through 7, beginning
+	// with Monday and ending with Sunday.
+	//
+	// For example, 1:05:00 specifies maintenance at 5 AM Monday.
+	WeeklyMaintenanceStartTime *string `json:"weeklyMaintenanceStartTime,omitempty"`
+}
+
+// The Network File System (NFS) configurations for mounting an Amazon FSx for
+// OpenZFS file system.
+type OpenZFSNfsExport struct {
+	ClientConfigurations []*OpenZFSClientConfiguration `json:"clientConfigurations,omitempty"`
+}
+
+// The snapshot configuration used when creating an Amazon FSx for OpenZFS volume
+// from a snapshot.
+type OpenZFSOriginSnapshotConfiguration struct {
+	// The Amazon Resource Name (ARN) for a given resource. ARNs uniquely identify
+	// Amazon Web Services resources. We require an ARN when you need to specify
+	// a resource unambiguously across all of Amazon Web Services. For more information,
+	// see Amazon Resource Names (ARNs) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
+	// in the Amazon Web Services General Reference.
+	SnapshotARN *string `json:"snapshotARN,omitempty"`
+}
+
+// The configuration for the optional provisioned SSD read cache on Amazon FSx
+// for OpenZFS file systems that use the Intelligent-Tiering storage class.
+type OpenZFSReadCacheConfiguration struct {
+	// Specifies the file system's storage capacity, in gibibytes (GiB).
+	SizeGiB    *int64  `json:"sizeGiB,omitempty"`
+	SizingMode *string `json:"sizingMode,omitempty"`
+}
+
+// Used to configure quotas that define how much storage a user or group can
+// use on an FSx for OpenZFS volume. For more information, see Volume properties
+// (https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/managing-volumes.html#volume-properties)
+// in the FSx for OpenZFS User Guide.
+type OpenZFSUserOrGroupQuota struct {
+	ID                      *int64  `json:"id,omitempty"`
+	StorageCapacityQuotaGiB *int64  `json:"storageCapacityQuotaGiB,omitempty"`
+	Type                    *string `json:"type_,omitempty"`
+}
+
+// The configuration of an Amazon FSx for OpenZFS volume.
+type OpenZFSVolumeConfiguration struct {
+	CopyTagsToSnapshots        *bool               `json:"copyTagsToSnapshots,omitempty"`
+	DataCompressionType        *string             `json:"dataCompressionType,omitempty"`
+	DeleteClonedVolumes        *bool               `json:"deleteClonedVolumes,omitempty"`
+	DeleteIntermediateData     *bool               `json:"deleteIntermediateData,omitempty"`
+	DeleteIntermediateSnaphots *bool               `json:"deleteIntermediateSnaphots,omitempty"`
+	NfsExports                 []*OpenZFSNfsExport `json:"nfsExports,omitempty"`
+	ParentVolumeID             *string             `json:"parentVolumeID,omitempty"`
+	ReadOnly                   *bool               `json:"readOnly,omitempty"`
+	RecordSizeKiB              *int64              `json:"recordSizeKiB,omitempty"`
+	// The Amazon Resource Name (ARN) for a given resource. ARNs uniquely identify
+	// Amazon Web Services resources. We require an ARN when you need to specify
+	// a resource unambiguously across all of Amazon Web Services. For more information,
+	// see Amazon Resource Names (ARNs) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
+	// in the Amazon Web Services General Reference.
+	SourceSnapshotARN             *string                    `json:"sourceSnapshotARN,omitempty"`
+	StorageCapacityQuotaGiB       *int64                     `json:"storageCapacityQuotaGiB,omitempty"`
+	StorageCapacityReservationGiB *int64                     `json:"storageCapacityReservationGiB,omitempty"`
+	UserAndGroupQuotas            []*OpenZFSUserOrGroupQuota `json:"userAndGroupQuotas,omitempty"`
+}
+
+// Describes the S3 access point configuration of the S3 access point attachment.
+type S3AccessPoint struct {
+	ResourceARN *string `json:"resourceARN,omitempty"`
+}
+
+// An S3 access point attached to an Amazon FSx volume.
+type S3AccessPointAttachment struct {
+	// The time that the resource was created, in seconds (since 1970-01-01T00:00:00Z),
+	// also known as Unix time.
+	CreationTime *metav1.Time `json:"creationTime,omitempty"`
+}
+
+// Describes the FSx for ONTAP attachment configuration of an S3 access point
+// attachment.
+type S3AccessPointOntapConfiguration struct {
+	VolumeID *string `json:"volumeID,omitempty"`
+}
+
+// Describes the FSx for OpenZFS attachment configuration of an S3 access point
+// attachment.
+type S3AccessPointOpenZFSConfiguration struct {
+	VolumeID *string `json:"volumeID,omitempty"`
+}
+
+// If included, Amazon S3 restricts access to this access point to requests
+// from the specified virtual private cloud (VPC).
+type S3AccessPointVPCConfiguration struct {
+	// The ID of your virtual private cloud (VPC). For more information, see VPC
+	// and subnets (https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Subnets.html)
+	// in the Amazon VPC User Guide.
+	VPCID *string `json:"vpcID,omitempty"`
+}
+
+// The configuration of the self-managed Microsoft Active Directory (AD) directory
+// to which the Windows File Server or ONTAP storage virtual machine (SVM) instance
+// is joined.
+type SelfManagedActiveDirectoryAttributes struct {
+	DNSIPs                              []*string `json:"dnsIPs,omitempty"`
+	DomainJoinServiceAccountSecret      *string   `json:"domainJoinServiceAccountSecret,omitempty"`
+	DomainName                          *string   `json:"domainName,omitempty"`
+	FileSystemAdministratorsGroup       *string   `json:"fileSystemAdministratorsGroup,omitempty"`
+	OrganizationalUnitDistinguishedName *string   `json:"organizationalUnitDistinguishedName,omitempty"`
+	UserName                            *string   `json:"userName,omitempty"`
+}
+
+// The configuration that Amazon FSx uses to join a FSx for Windows File Server
+// file system or an FSx for ONTAP storage virtual machine (SVM) to a self-managed
+// (including on-premises) Microsoft Active Directory (AD) directory. For more
+// information, see Using Amazon FSx for Windows with your self-managed Microsoft
+// Active Directory (https://docs.aws.amazon.com/fsx/latest/WindowsGuide/self-managed-AD.html)
+// or Managing FSx for ONTAP SVMs (https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-svms.html).
+type SelfManagedActiveDirectoryConfiguration struct {
+	DNSIPs                              []*string                       `json:"dnsIPs,omitempty"`
+	DomainJoinServiceAccountSecret      *string                         `json:"domainJoinServiceAccountSecret,omitempty"`
+	DomainName                          *string                         `json:"domainName,omitempty"`
+	FileSystemAdministratorsGroup       *string                         `json:"fileSystemAdministratorsGroup,omitempty"`
+	OrganizationalUnitDistinguishedName *string                         `json:"organizationalUnitDistinguishedName,omitempty"`
+	Password                            *ackv1alpha1.SecretKeyReference `json:"password,omitempty"`
+	UserName                            *string                         `json:"userName,omitempty"`
+}
+
+// Specifies changes you are making to the self-managed Microsoft Active Directory
+// configuration to which an FSx for Windows File Server file system or an FSx
+// for ONTAP SVM is joined.
+type SelfManagedActiveDirectoryConfigurationUpdates struct {
+	DNSIPs                              []*string `json:"dnsIPs,omitempty"`
+	DomainJoinServiceAccountSecret      *string   `json:"domainJoinServiceAccountSecret,omitempty"`
+	DomainName                          *string   `json:"domainName,omitempty"`
+	FileSystemAdministratorsGroup       *string   `json:"fileSystemAdministratorsGroup,omitempty"`
+	OrganizationalUnitDistinguishedName *string   `json:"organizationalUnitDistinguishedName,omitempty"`
+	Password                            *string   `json:"password,omitempty"`
+	UserName                            *string   `json:"userName,omitempty"`
+}
+
+// Specifies the SnapLock configuration for an FSx for ONTAP SnapLock volume.
+type SnaplockConfiguration struct {
+	AuditLogVolume          *bool `json:"auditLogVolume,omitempty"`
+	VolumeAppendModeEnabled *bool `json:"volumeAppendModeEnabled,omitempty"`
+}
+
+// A snapshot of an Amazon FSx for OpenZFS volume.
+type Snapshot struct {
+	// The time that the resource was created, in seconds (since 1970-01-01T00:00:00Z),
+	// also known as Unix time.
+	CreationTime *metav1.Time `json:"creationTime,omitempty"`
+	// The Amazon Resource Name (ARN) for a given resource. ARNs uniquely identify
+	// Amazon Web Services resources. We require an ARN when you need to specify
+	// a resource unambiguously across all of Amazon Web Services. For more information,
+	// see Amazon Resource Names (ARNs) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
+	// in the Amazon Web Services General Reference.
+	ResourceARN *string `json:"resourceARN,omitempty"`
+	// A list of Tag values, with a maximum of 50 elements.
+	Tags     []*Tag  `json:"tags,omitempty"`
+	VolumeID *string `json:"volumeID,omitempty"`
+}
+
+// Describes the Amazon FSx for NetApp ONTAP storage virtual machine (SVM) configuration.
+type StorageVirtualMachine struct {
+	// The time that the resource was created, in seconds (since 1970-01-01T00:00:00Z),
+	// also known as Unix time.
+	CreationTime *metav1.Time `json:"creationTime,omitempty"`
+	// The globally unique ID of the file system, assigned by Amazon FSx.
+	FileSystemID *string `json:"fileSystemID,omitempty"`
+	// The Amazon Resource Name (ARN) for a given resource. ARNs uniquely identify
+	// Amazon Web Services resources. We require an ARN when you need to specify
+	// a resource unambiguously across all of Amazon Web Services. For more information,
+	// see Amazon Resource Names (ARNs) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
+	// in the Amazon Web Services General Reference.
+	ResourceARN *string `json:"resourceARN,omitempty"`
+	// A list of Tag values, with a maximum of 50 elements.
+	Tags []*Tag `json:"tags,omitempty"`
+}
+
+// Describes the Microsoft Active Directory (AD) directory configuration to
+// which the FSx for ONTAP storage virtual machine (SVM) is joined. Note that
+// account credentials are not returned in the response payload.
+type SvmActiveDirectoryConfiguration struct {
+	// The configuration of the self-managed Microsoft Active Directory (AD) directory
+	// to which the Windows File Server or ONTAP storage virtual machine (SVM) instance
+	// is joined.
+	SelfManagedActiveDirectoryConfiguration *SelfManagedActiveDirectoryAttributes `json:"selfManagedActiveDirectoryConfiguration,omitempty"`
+}
+
+// An Amazon FSx for NetApp ONTAP storage virtual machine (SVM) has four endpoints
+// that are used to access data or to manage the SVM using the NetApp ONTAP
+// CLI, REST API, or NetApp CloudManager. They are the Iscsi, Management, Nfs,
+// and Smb endpoints.
+type SvmEndpoint struct {
+	// The file system's DNS name. You can mount your file system using its DNS
+	// name.
+	DNSName       *string   `json:"dnsName,omitempty"`
+	IPAddresses   []*string `json:"ipAddresses,omitempty"`
+	IPv6Addresses []*string `json:"ipv6Addresses,omitempty"`
+}
+
+// Specifies a key-value pair for a resource tag.
+type Tag struct {
+	// A string of 1 to 128 characters that specifies the key for a tag. Tag keys
+	// must be unique for the resource to which they are attached.
+	Key *string `json:"key,omitempty"`
+	// A string of 0 to 256 characters that specifies the value for a tag. Tag values
+	// can be null and don't have to be unique in a tag set.
+	Value *string `json:"value,omitempty"`
+}
+
+// The configuration update for an Amazon File Cache resource.
+type UpdateFileCacheLustreConfiguration struct {
+	// The preferred start time to perform weekly maintenance, formatted d:HH:MM
+	// in the UTC time zone, where d is the weekday number, from 1 through 7, beginning
+	// with Monday and ending with Sunday.
+	//
+	// For example, 1:05:00 specifies maintenance at 5 AM Monday.
+	WeeklyMaintenanceStartTime *string `json:"weeklyMaintenanceStartTime,omitempty"`
+}
+
+// The configuration object for Amazon FSx for Lustre file systems used in the
+// UpdateFileSystem operation.
+type UpdateFileSystemLustreConfiguration struct {
+	AutoImportPolicy *string `json:"autoImportPolicy,omitempty"`
+	// The number of days to retain automatic backups. Setting this property to
+	// 0 disables automatic backups. You can retain automatic backups for a maximum
+	// of 90 days. The default is 30.
+	AutomaticBackupRetentionDays *int64 `json:"automaticBackupRetentionDays,omitempty"`
+	// A recurring daily time, in the format HH:MM. HH is the zero-padded hour of
+	// the day (0-23), and MM is the zero-padded minute of the hour. For example,
+	// 05:00 specifies 5 AM daily.
+	DailyAutomaticBackupStartTime *string `json:"dailyAutomaticBackupStartTime,omitempty"`
+	DataCompressionType           *string `json:"dataCompressionType,omitempty"`
+	// The configuration for the optional provisioned SSD read cache on Amazon FSx
+	// for Lustre file systems that use the Intelligent-Tiering storage class.
+	DataReadCacheConfiguration *LustreReadCacheConfiguration `json:"dataReadCacheConfiguration,omitempty"`
+	// The Lustre logging configuration used when creating or updating an Amazon
+	// FSx for Lustre file system. An Amazon File Cache is created with Lustre logging
+	// enabled by default, with a setting of WARN_ERROR for the logging events.
+	// which can't be changed.
+	//
+	// Lustre logging writes the enabled logging events for your file system or
+	// cache to Amazon CloudWatch Logs.
+	LogConfiguration *LustreLogCreateConfiguration `json:"logConfiguration,omitempty"`
+	// The Lustre metadata performance configuration update for an Amazon FSx for
+	// Lustre file system using a PERSISTENT_2 deployment type. You can request
+	// an increase in your file system's Metadata IOPS and/or switch your file system's
+	// metadata configuration mode. For more information, see Managing metadata
+	// performance (https://docs.aws.amazon.com/fsx/latest/LustreGuide/managing-metadata-performance.html)
+	// in the Amazon FSx for Lustre User Guide.
+	MetadataConfiguration    *UpdateFileSystemLustreMetadataConfiguration `json:"metadataConfiguration,omitempty"`
+	PerUnitStorageThroughput *int64                                       `json:"perUnitStorageThroughput,omitempty"`
+	// The configuration for Lustre root squash used to restrict root-level access
+	// from clients that try to access your FSx for Lustre file system as root.
+	// Use the RootSquash parameter to enable root squash. To learn more about Lustre
+	// root squash, see Lustre root squash (https://docs.aws.amazon.com/fsx/latest/LustreGuide/root-squash.html).
+	//
+	// You can also use the NoSquashNids parameter to provide an array of clients
+	// who are not affected by the root squash setting. These clients will access
+	// the file system as root, with unrestricted privileges.
+	RootSquashConfiguration *LustreRootSquashConfiguration `json:"rootSquashConfiguration,omitempty"`
+	ThroughputCapacity      *int64                         `json:"throughputCapacity,omitempty"`
+	// The preferred start time to perform weekly maintenance, formatted d:HH:MM
+	// in the UTC time zone, where d is the weekday number, from 1 through 7, beginning
+	// with Monday and ending with Sunday.
+	//
+	// For example, 1:05:00 specifies maintenance at 5 AM Monday.
+	WeeklyMaintenanceStartTime *string `json:"weeklyMaintenanceStartTime,omitempty"`
+}
+
+// The Lustre metadata performance configuration update for an Amazon FSx for
+// Lustre file system using a PERSISTENT_2 deployment type. You can request
+// an increase in your file system's Metadata IOPS and/or switch your file system's
+// metadata configuration mode. For more information, see Managing metadata
+// performance (https://docs.aws.amazon.com/fsx/latest/LustreGuide/managing-metadata-performance.html)
+// in the Amazon FSx for Lustre User Guide.
+type UpdateFileSystemLustreMetadataConfiguration struct {
+	IOPS *int64  `json:"iops,omitempty"`
+	Mode *string `json:"mode,omitempty"`
+}
+
+// The configuration updates for an Amazon FSx for NetApp ONTAP file system.
+type UpdateFileSystemOntapConfiguration struct {
+	AddRouteTableIDs []*string `json:"addRouteTableIDs,omitempty"`
+	// The number of days to retain automatic backups. Setting this property to
+	// 0 disables automatic backups. You can retain automatic backups for a maximum
+	// of 90 days. The default is 30.
+	AutomaticBackupRetentionDays *int64 `json:"automaticBackupRetentionDays,omitempty"`
+	// A recurring daily time, in the format HH:MM. HH is the zero-padded hour of
+	// the day (0-23), and MM is the zero-padded minute of the hour. For example,
+	// 05:00 specifies 5 AM daily.
+	DailyAutomaticBackupStartTime *string `json:"dailyAutomaticBackupStartTime,omitempty"`
+	// The SSD IOPS (input/output operations per second) configuration for an Amazon
+	// FSx for NetApp ONTAP, Amazon FSx for Windows File Server, or FSx for OpenZFS
+	// file system. By default, Amazon FSx automatically provisions 3 IOPS per GB
+	// of storage capacity. You can provision additional IOPS per GB of storage.
+	// The configuration consists of the total number of provisioned SSD IOPS and
+	// how it is was provisioned, or the mode (by the customer or by Amazon FSx).
+	DiskIOPSConfiguration    *DiskIOPSConfiguration `json:"diskIOPSConfiguration,omitempty"`
+	EndpointIPv6AddressRange *string                `json:"endpointIPv6AddressRange,omitempty"`
+	FsxAdminPassword         *string                `json:"fsxAdminPassword,omitempty"`
+	HAPairs                  *int64                 `json:"hAPairs,omitempty"`
+	RemoveRouteTableIDs      []*string              `json:"removeRouteTableIDs,omitempty"`
+	// The sustained throughput of an Amazon FSx file system in Megabytes per second
+	// (MBps).
+	ThroughputCapacity          *int64 `json:"throughputCapacity,omitempty"`
+	ThroughputCapacityPerHAPair *int64 `json:"throughputCapacityPerHAPair,omitempty"`
+	// The preferred start time to perform weekly maintenance, formatted d:HH:MM
+	// in the UTC time zone, where d is the weekday number, from 1 through 7, beginning
+	// with Monday and ending with Sunday.
+	//
+	// For example, 1:05:00 specifies maintenance at 5 AM Monday.
+	WeeklyMaintenanceStartTime *string `json:"weeklyMaintenanceStartTime,omitempty"`
+}
+
+// The configuration updates for an Amazon FSx for OpenZFS file system.
+type UpdateFileSystemOpenZFSConfiguration struct {
+	AddRouteTableIDs []*string `json:"addRouteTableIDs,omitempty"`
+	// The number of days to retain automatic backups. Setting this property to
+	// 0 disables automatic backups. You can retain automatic backups for a maximum
+	// of 90 days. The default is 30.
+	AutomaticBackupRetentionDays *int64 `json:"automaticBackupRetentionDays,omitempty"`
+	CopyTagsToBackups            *bool  `json:"copyTagsToBackups,omitempty"`
+	CopyTagsToVolumes            *bool  `json:"copyTagsToVolumes,omitempty"`
+	// A recurring daily time, in the format HH:MM. HH is the zero-padded hour of
+	// the day (0-23), and MM is the zero-padded minute of the hour. For example,
+	// 05:00 specifies 5 AM daily.
+	DailyAutomaticBackupStartTime *string `json:"dailyAutomaticBackupStartTime,omitempty"`
+	// The SSD IOPS (input/output operations per second) configuration for an Amazon
+	// FSx for NetApp ONTAP, Amazon FSx for Windows File Server, or FSx for OpenZFS
+	// file system. By default, Amazon FSx automatically provisions 3 IOPS per GB
+	// of storage capacity. You can provision additional IOPS per GB of storage.
+	// The configuration consists of the total number of provisioned SSD IOPS and
+	// how it is was provisioned, or the mode (by the customer or by Amazon FSx).
+	DiskIOPSConfiguration    *DiskIOPSConfiguration `json:"diskIOPSConfiguration,omitempty"`
+	EndpointIPv6AddressRange *string                `json:"endpointIPv6AddressRange,omitempty"`
+	// The configuration for the optional provisioned SSD read cache on Amazon FSx
+	// for OpenZFS file systems that use the Intelligent-Tiering storage class.
+	ReadCacheConfiguration *OpenZFSReadCacheConfiguration `json:"readCacheConfiguration,omitempty"`
+	RemoveRouteTableIDs    []*string                      `json:"removeRouteTableIDs,omitempty"`
+	// The sustained throughput of an Amazon FSx file system in Megabytes per second
+	// (MBps).
+	ThroughputCapacity *int64 `json:"throughputCapacity,omitempty"`
+	// The preferred start time to perform weekly maintenance, formatted d:HH:MM
+	// in the UTC time zone, where d is the weekday number, from 1 through 7, beginning
+	// with Monday and ending with Sunday.
+	//
+	// For example, 1:05:00 specifies maintenance at 5 AM Monday.
+	WeeklyMaintenanceStartTime *string `json:"weeklyMaintenanceStartTime,omitempty"`
+}
+
+// Updates the configuration for an existing Amazon FSx for Windows File Server
+// file system. Amazon FSx only overwrites existing properties with non-null
+// values provided in the request.
+type UpdateFileSystemWindowsConfiguration struct {
+	// The Windows file access auditing configuration used when creating or updating
+	// an Amazon FSx for Windows File Server file system.
+	AuditLogConfiguration *WindowsAuditLogCreateConfiguration `json:"auditLogConfiguration,omitempty"`
+	// The number of days to retain automatic backups. Setting this property to
+	// 0 disables automatic backups. You can retain automatic backups for a maximum
+	// of 90 days. The default is 30.
+	AutomaticBackupRetentionDays *int64 `json:"automaticBackupRetentionDays,omitempty"`
+	// A recurring daily time, in the format HH:MM. HH is the zero-padded hour of
+	// the day (0-23), and MM is the zero-padded minute of the hour. For example,
+	// 05:00 specifies 5 AM daily.
+	DailyAutomaticBackupStartTime *string `json:"dailyAutomaticBackupStartTime,omitempty"`
+	// The SSD IOPS (input/output operations per second) configuration for an Amazon
+	// FSx for NetApp ONTAP, Amazon FSx for Windows File Server, or FSx for OpenZFS
+	// file system. By default, Amazon FSx automatically provisions 3 IOPS per GB
+	// of storage capacity. You can provision additional IOPS per GB of storage.
+	// The configuration consists of the total number of provisioned SSD IOPS and
+	// how it is was provisioned, or the mode (by the customer or by Amazon FSx).
+	DiskIOPSConfiguration *DiskIOPSConfiguration `json:"diskIOPSConfiguration,omitempty"`
+	// The File Server Resource Manager (FSRM) configuration that Amazon FSx for
+	// Windows File Server uses for the file system. When FSRM is enabled, you can
+	// manage and monitor storage quotas, file screening, storage reports, and file
+	// classification.
+	FsrmConfiguration *WindowsFsrmConfiguration `json:"fsrmConfiguration,omitempty"`
+	// Specifies changes you are making to the self-managed Microsoft Active Directory
+	// configuration to which an FSx for Windows File Server file system or an FSx
+	// for ONTAP SVM is joined.
+	SelfManagedActiveDirectoryConfiguration *SelfManagedActiveDirectoryConfigurationUpdates `json:"selfManagedActiveDirectoryConfiguration,omitempty"`
+	// The sustained throughput of an Amazon FSx file system in Megabytes per second
+	// (MBps).
+	ThroughputCapacity *int64 `json:"throughputCapacity,omitempty"`
+	// The preferred start time to perform weekly maintenance, formatted d:HH:MM
+	// in the UTC time zone, where d is the weekday number, from 1 through 7, beginning
+	// with Monday and ending with Sunday.
+	//
+	// For example, 1:05:00 specifies maintenance at 5 AM Monday.
+	WeeklyMaintenanceStartTime *string `json:"weeklyMaintenanceStartTime,omitempty"`
+}
+
+// Used to specify changes to the ONTAP configuration for the volume you are
+// updating.
+type UpdateOntapVolumeConfiguration struct {
+	CopyTagsToBackups        *bool `json:"copyTagsToBackups,omitempty"`
+	StorageEfficiencyEnabled *bool `json:"storageEfficiencyEnabled,omitempty"`
+}
+
+// Used to specify changes to the OpenZFS configuration for the volume that
+// you are updating.
+type UpdateOpenZFSVolumeConfiguration struct {
+	DataCompressionType *string                    `json:"dataCompressionType,omitempty"`
+	NfsExports          []*OpenZFSNfsExport        `json:"nfsExports,omitempty"`
+	ReadOnly            *bool                      `json:"readOnly,omitempty"`
+	RecordSizeKiB       *int64                     `json:"recordSizeKiB,omitempty"`
+	UserAndGroupQuotas  []*OpenZFSUserOrGroupQuota `json:"userAndGroupQuotas,omitempty"`
+}
+
+// Updates the SnapLock configuration for an existing FSx for ONTAP volume.
+type UpdateSnaplockConfiguration struct {
+	AuditLogVolume          *bool `json:"auditLogVolume,omitempty"`
+	VolumeAppendModeEnabled *bool `json:"volumeAppendModeEnabled,omitempty"`
+}
+
+// Specifies updates to an FSx for ONTAP storage virtual machine's (SVM) Microsoft
+// Active Directory (AD) configuration. Note that account credentials are not
+// returned in the response payload.
+type UpdateSvmActiveDirectoryConfiguration struct {
+	// Specifies changes you are making to the self-managed Microsoft Active Directory
+	// configuration to which an FSx for Windows File Server file system or an FSx
+	// for ONTAP SVM is joined.
+	SelfManagedActiveDirectoryConfiguration *SelfManagedActiveDirectoryConfigurationUpdates `json:"selfManagedActiveDirectoryConfiguration,omitempty"`
+}
+
+// Describes an Amazon FSx volume.
+type Volume struct {
+	// The time that the resource was created, in seconds (since 1970-01-01T00:00:00Z),
+	// also known as Unix time.
+	CreationTime *metav1.Time `json:"creationTime,omitempty"`
+	// The globally unique ID of the file system, assigned by Amazon FSx.
+	FileSystemID *string `json:"fileSystemID,omitempty"`
+	// The Amazon Resource Name (ARN) for a given resource. ARNs uniquely identify
+	// Amazon Web Services resources. We require an ARN when you need to specify
+	// a resource unambiguously across all of Amazon Web Services. For more information,
+	// see Amazon Resource Names (ARNs) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
+	// in the Amazon Web Services General Reference.
+	ResourceARN *string `json:"resourceARN,omitempty"`
+	// A list of Tag values, with a maximum of 50 elements.
+	Tags     []*Tag  `json:"tags,omitempty"`
+	VolumeID *string `json:"volumeID,omitempty"`
+}
+
+// The configuration that Amazon FSx for Windows File Server uses to audit and
+// log user accesses of files, folders, and file shares on the Amazon FSx for
+// Windows File Server file system. For more information, see File access auditing
+// (https://docs.aws.amazon.com/fsx/latest/WindowsGuide/file-access-auditing.html).
+type WindowsAuditLogConfiguration struct {
+	AuditLogDestination          *string `json:"auditLogDestination,omitempty"`
+	FileAccessAuditLogLevel      *string `json:"fileAccessAuditLogLevel,omitempty"`
+	FileShareAccessAuditLogLevel *string `json:"fileShareAccessAuditLogLevel,omitempty"`
+}
+
+// The Windows file access auditing configuration used when creating or updating
+// an Amazon FSx for Windows File Server file system.
+type WindowsAuditLogCreateConfiguration struct {
+	AuditLogDestination          *string `json:"auditLogDestination,omitempty"`
+	FileAccessAuditLogLevel      *string `json:"fileAccessAuditLogLevel,omitempty"`
+	FileShareAccessAuditLogLevel *string `json:"fileShareAccessAuditLogLevel,omitempty"`
+}
+
+// The configuration for this Microsoft Windows file system.
+type WindowsFileSystemConfiguration struct {
+	ActiveDirectoryID *string `json:"activeDirectoryID,omitempty"`
+	// The configuration that Amazon FSx for Windows File Server uses to audit and
+	// log user accesses of files, folders, and file shares on the Amazon FSx for
+	// Windows File Server file system. For more information, see File access auditing
+	// (https://docs.aws.amazon.com/fsx/latest/WindowsGuide/file-access-auditing.html).
+	AuditLogConfiguration *WindowsAuditLogConfiguration `json:"auditLogConfiguration,omitempty"`
+	// The number of days to retain automatic backups. Setting this property to
+	// 0 disables automatic backups. You can retain automatic backups for a maximum
+	// of 90 days. The default is 30.
+	AutomaticBackupRetentionDays *int64 `json:"automaticBackupRetentionDays,omitempty"`
+	CopyTagsToBackups            *bool  `json:"copyTagsToBackups,omitempty"`
+	// A recurring daily time, in the format HH:MM. HH is the zero-padded hour of
+	// the day (0-23), and MM is the zero-padded minute of the hour. For example,
+	// 05:00 specifies 5 AM daily.
+	DailyAutomaticBackupStartTime *string `json:"dailyAutomaticBackupStartTime,omitempty"`
+	DeploymentType                *string `json:"deploymentType,omitempty"`
+	// The SSD IOPS (input/output operations per second) configuration for an Amazon
+	// FSx for NetApp ONTAP, Amazon FSx for Windows File Server, or FSx for OpenZFS
+	// file system. By default, Amazon FSx automatically provisions 3 IOPS per GB
+	// of storage capacity. You can provision additional IOPS per GB of storage.
+	// The configuration consists of the total number of provisioned SSD IOPS and
+	// how it is was provisioned, or the mode (by the customer or by Amazon FSx).
+	DiskIOPSConfiguration *DiskIOPSConfiguration `json:"diskIOPSConfiguration,omitempty"`
+	// The File Server Resource Manager (FSRM) configuration that Amazon FSx for
+	// Windows File Server uses for the file system. When FSRM is enabled, you can
+	// manage and monitor storage quotas, file screening, storage reports, and file
+	// classification.
+	FsrmConfiguration *WindowsFsrmConfiguration `json:"fsrmConfiguration,omitempty"`
+	// A list of maintenance operations.
+	MaintenanceOperationsInProgress []*string `json:"maintenanceOperationsInProgress,omitempty"`
+	PreferredFileServerIP           *string   `json:"preferredFileServerIP,omitempty"`
+	PreferredFileServerIPv6         *string   `json:"preferredFileServerIPv6,omitempty"`
+	// The ID for a subnet. A subnet is a range of IP addresses in your virtual
+	// private cloud (VPC). For more information, see VPC and subnets (https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Subnets.html)
+	// in the Amazon VPC User Guide.
+	PreferredSubnetID *string `json:"preferredSubnetID,omitempty"`
+	// The file system's DNS name. You can mount your file system using its DNS
+	// name.
+	RemoteAdministrationEndpoint *string `json:"remoteAdministrationEndpoint,omitempty"`
+	// The configuration of the self-managed Microsoft Active Directory (AD) directory
+	// to which the Windows File Server or ONTAP storage virtual machine (SVM) instance
+	// is joined.
+	SelfManagedActiveDirectoryConfiguration *SelfManagedActiveDirectoryAttributes `json:"selfManagedActiveDirectoryConfiguration,omitempty"`
+	// The sustained throughput of an Amazon FSx file system in Megabytes per second
+	// (MBps).
+	ThroughputCapacity *int64 `json:"throughputCapacity,omitempty"`
+	// The preferred start time to perform weekly maintenance, formatted d:HH:MM
+	// in the UTC time zone, where d is the weekday number, from 1 through 7, beginning
+	// with Monday and ending with Sunday.
+	//
+	// For example, 1:05:00 specifies maintenance at 5 AM Monday.
+	WeeklyMaintenanceStartTime *string `json:"weeklyMaintenanceStartTime,omitempty"`
+}
+
+// The File Server Resource Manager (FSRM) configuration that Amazon FSx for
+// Windows File Server uses for the file system. When FSRM is enabled, you can
+// manage and monitor storage quotas, file screening, storage reports, and file
+// classification.
+type WindowsFsrmConfiguration struct {
+	EventLogDestination *string `json:"eventLogDestination,omitempty"`
+	FsrmServiceEnabled  *bool   `json:"fsrmServiceEnabled,omitempty"`
+}

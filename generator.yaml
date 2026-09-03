@@ -5,9 +5,227 @@ ignore:
       - DataRepositoryAssociation
       - DataRepositoryTask
       - FileCache
-      - FileSystem
       - FileSystemFromBackup
       - Snapshot
       - StorageVirtualMachine
       - Volume
       - VolumeFromBackup
+  field_paths:
+      # AdministrativeAction.TargetFileSystemValues is itself a FileSystem, so
+      # the shape recurses infinitely. Progress reporting only.
+      - FileSystem.AdministrativeActions
+      # Create input takes DNS-name strings; the output returns Alias structs
+      # ({Name, Lifecycle}). Code-gen matches them by name and emits an
+      # unassigned element var. `set.from` can't reach Alias.Name (a nested
+      # member's SetFieldConfig isn't threaded into setResourceForSlice), so
+      # drop it from the output shape; compare-ignored below.
+      - WindowsFileSystemConfiguration.Aliases
+      # Delete-time-only options (SkipFinalBackup, FinalBackupTags) that
+      # code-gen wrongly tries to populate from the Create-shaped Spec structs.
+      # Set by hand in sdk_delete_post_build_request instead.
+      - DeleteFileSystemInput.LustreConfiguration
+      - DeleteFileSystemInput.OpenZFSConfiguration
+      - DeleteFileSystemInput.WindowsConfiguration
+resources:
+  FileSystem:
+    # ClientRequestToken and friends are SDK implementation details the
+    # middleware auto-fills; excluded by trait rather than by naming each
+    # operation's input.
+    ignore_idempotency_token: true
+    # Update*Configuration members diverge from the Create*Configuration shapes
+    # the Spec is built from (e.g. Add/RemoveRouteTableIds vs one RouteTableIds
+    # list), so the generated newUpdateRequestPayload does not compile.
+    update_operation:
+      custom_method_name: customUpdateFileSystem
+    hooks:
+      # Injects the password-rotation delta the generated comparison cannot
+      # produce; see LastAppliedFsxAdminPasswordRef in Status.
+      delta_pre_compare:
+        code: customPreCompare(delta, a, b)
+      # sdkCreate/sdkFind assign ko.Spec.<Type>Configuration wholesale from the
+      # output shape, which drops create-only members (and secret references)
+      # that shape does not carry. These two hooks copy them back from the
+      # resource the user actually submitted.
+      sdk_create_post_build_request:
+        template_path: hooks/file_system/sdk_create_post_build_request.go.tpl
+      sdk_create_post_set_output:
+        template_path: hooks/file_system/sdk_create_post_set_output.go.tpl
+      sdk_read_many_post_set_output:
+        template_path: hooks/file_system/sdk_read_many_post_set_output.go.tpl
+      sdk_delete_post_build_request:
+        template_path: hooks/file_system/sdk_delete_post_build_request.go.tpl
+      # Delete is async: FSx stays DELETING for 5-10 min with its ENIs still
+      # attached, so dropping the finalizer early breaks deletion of the ec2
+      # Subnet/SecurityGroup CRs this file system references.
+      sdk_delete_pre_build_request:
+        template_path: hooks/file_system/sdk_delete_pre_build_request.go.tpl
+      sdk_delete_post_request:
+        template_path: hooks/file_system/sdk_delete_post_request.go.tpl
+    # Tags round-trip via DescribeFileSystems. Because sdkUpdate is custom, the
+    # tag sync runs from customUpdateFileSystem, not a hook template.
+    tags:
+      ignore: false
+    synced:
+      when:
+        - path: Status.Lifecycle
+          in: [ "AVAILABLE" ]
+    exceptions:
+      errors:
+        404:
+          code: FileSystemNotFound
+      terminal_codes:
+        - IncompatibleParameterError
+        - InvalidExportPath
+        - InvalidImportPath
+        - InvalidNetworkSettings
+        - InvalidPerUnitStorageThroughput
+        - MissingFileSystemConfiguration
+        - UnsupportedOperation
+    fields:
+      # CRD.IsPrimaryARNField only auto-detects a member named `ARN` or
+      # `FileSystemARN`, so without this Status.ACKResourceMetadata.ARN stays
+      # nil -- and that ARN is the input to TagResource, so tag sync never runs.
+      ResourceARN:
+        is_arn: true
+      # Baseline for password-rotation detection. In Status rather than
+      # annotations -- see ensureLastAppliedSecretBaseline for why.
+      LastAppliedFsxAdminPasswordRef:
+        is_read_only: true
+        type: string
+      LastAppliedSelfManagedADPasswordRef:
+        is_read_only: true
+        type: string
+      # The immutable Spec paths present at creation, so a later add or removal
+      # is detectable. See rejectImmutableFieldChanges for why is_immutable is
+      # not sufficient alone.
+      #
+      # JSON-encoded string, not a string list: code-gen rejects
+      # `custom_field: list_of: String` here with "base shape not found".
+      LastAppliedImmutableFields:
+        is_read_only: true
+        type: string
+      FileSystemType:
+        is_immutable: true
+      SubnetIds:
+        is_immutable: true
+        references:
+          resource: Subnet
+          service_name: ec2
+          path: Status.SubnetID
+      SecurityGroupIds:
+        is_immutable: true
+        references:
+          resource: SecurityGroup
+          service_name: ec2
+          path: Status.ID
+      KmsKeyId:
+        is_immutable: true
+        references:
+          resource: Key
+          service_name: kms
+          path: Status.ACKResourceMetadata.ARN
+      # Round-tripped by Describe but absent from every Update*Configuration
+      # shape. Without is_immutable an edit is silently dropped -- the delta
+      # never clears and Synced still reports True. CEL rejects it up front.
+      LustreConfiguration.CopyTagsToBackups:
+        is_immutable: true
+      LustreConfiguration.DeploymentType:
+        is_immutable: true
+      LustreConfiguration.DriveCacheType:
+        is_immutable: true
+      LustreConfiguration.EfaEnabled:
+        is_immutable: true
+      OntapConfiguration.DeploymentType:
+        is_immutable: true
+      OntapConfiguration.EndpointIpAddressRange:
+        is_immutable: true
+      OntapConfiguration.PreferredSubnetId:
+        is_immutable: true
+      OpenZFSConfiguration.DeploymentType:
+        is_immutable: true
+      OpenZFSConfiguration.EndpointIpAddressRange:
+        is_immutable: true
+      OpenZFSConfiguration.PreferredSubnetId:
+        is_immutable: true
+      WindowsConfiguration.ActiveDirectoryId:
+        is_immutable: true
+      WindowsConfiguration.CopyTagsToBackups:
+        is_immutable: true
+      WindowsConfiguration.DeploymentType:
+        is_immutable: true
+      WindowsConfiguration.PreferredSubnetId:
+        is_immutable: true
+      # Never returned by Describe, so `latest` is always nil and every
+      # reconcile would re-issue UpdateFileSystem to re-set the password.
+      # Same pairing as elasticache AuthToken / memorydb Password.
+      OntapConfiguration.FsxAdminPassword:
+        is_secret: true
+        compare:
+          is_ignored: true
+      WindowsConfiguration.SelfManagedActiveDirectoryConfiguration.Password:
+        is_secret: true
+        compare:
+          is_ignored: true
+      # The remaining entries here are fields Describe cannot name-match back
+      # into the Spec. Each is either immutable (create-only in the FSx API, so
+      # an edit must be rejected rather than silently dropped) or recovered from
+      # the response by a read hook so comparison still works. Nothing is left
+      # both ignored and mutable.
+      #
+      # Aliases are mutable in FSx but only via
+      # Associate/DisassociateFileSystemAliases, which this resource does not
+      # implement yet -- immutable until it does.
+      WindowsConfiguration.Aliases:
+        is_immutable: true
+        compare:
+          is_ignored: true
+      # Describe nests these under DataRepositoryConfiguration, which does not
+      # name-match, so recoverObservedLustreDataRepository supplies the observed
+      # values and comparison stays on. AutoImportPolicy is an
+      # UpdateFileSystemLustreConfiguration member and stays mutable; the other
+      # three are create-only.
+      #
+      # is_immutable is only the first line of defence everywhere in this list:
+      # it emits a field-level `self == oldSelf` transition rule, which
+      # Kubernetes skips when the old value is absent, so it cannot reject an
+      # absent<->present transition. rejectImmutableFieldChanges in hooks.go
+      # covers both value and presence changes for every path here, using
+      # Status.LastAppliedImmutableFields as the create-time baseline.
+      LustreConfiguration.ExportPath:
+        is_immutable: true
+      LustreConfiguration.ImportPath:
+        is_immutable: true
+      LustreConfiguration.ImportedFileChunkSize:
+        is_immutable: true
+      # Create-only: absent from UpdateFileSystemOpenZFSConfiguration, and the
+      # output shape carries RootVolumeId instead.
+      OpenZFSConfiguration.RootVolumeConfiguration:
+        is_immutable: true
+        compare:
+          is_ignored: true
+    print:
+      add_age_column: true
+      add_synced_column: true
+      order_by: index
+      additional_columns:
+        - name: ID
+          json_path: .status.fileSystemID
+          type: string
+          index: 10
+        - name: TYPE
+          json_path: .spec.fileSystemType
+          type: string
+          index: 15
+        - name: STORAGE
+          json_path: .spec.storageCapacity
+          type: integer
+          index: 20
+        - name: DNSNAME
+          json_path: .status.dnsName
+          type: string
+          index: 25
+          priority: 1
+        - name: STATE
+          json_path: .status.lifecycle
+          type: string
+          index: 30

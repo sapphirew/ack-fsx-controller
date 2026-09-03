@@ -9,6 +9,7 @@ rules:
 - apiGroups:
   - fsx.services.k8s.aws
   resources:
+  - filesystems
   verbs:
   - get
   - list

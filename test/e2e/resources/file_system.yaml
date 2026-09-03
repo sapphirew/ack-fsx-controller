@@ -1,0 +1,25 @@
+apiVersion: fsx.services.k8s.aws/v1alpha1
+kind: FileSystem
+metadata:
+  name: $FILE_SYSTEM_NAME
+spec:
+  fileSystemType: LUSTRE
+  storageCapacity: $STORAGE_CAPACITY
+  storageType: SSD
+  subnetIDs:
+    - $PRIVATE_SUBNET_ID
+  securityGroupIDs:
+    - $SECURITY_GROUP_ID
+  lustreConfiguration:
+    # PERSISTENT_2 is not offered in every Region and needs >= 1200 GiB.
+    # Fall back to PERSISTENT_1 if a new Region rejects it at create time
+    # (InvalidNetworkSettings / a BadRequest condition).
+    deploymentType: PERSISTENT_2
+    perUnitStorageThroughput: 125
+    dataCompressionType: NONE
+    # Must stay quoted: YAML 1.1 parses the d:HH:MM format as a base-60
+    # integer when unquoted ("2:03:00" -> 7380).
+    weeklyMaintenanceStartTime: "$WEEKLY_MAINTENANCE_START_TIME"
+  tags:
+    - key: $TAG_KEY
+      value: $TAG_VALUE

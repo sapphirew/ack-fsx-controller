@@ -15,6 +15,7 @@
 import logging
 
 from acktest.bootstrapping import Resources, BootstrapFailureException
+from acktest.bootstrapping.vpc import VPC
 
 from e2e import bootstrap_directory
 from e2e.bootstrap_resources import BootstrapResources
@@ -23,7 +24,19 @@ def service_bootstrap() -> Resources:
     logging.getLogger().setLevel(logging.INFO)
 
     resources = BootstrapResources(
-        # TODO: Add bootstrapping when you have defined the resources
+        # One private subnet is enough for the single-AZ deployment types the
+        # tests use; FSx needs no internet egress to be created.
+        FSxVPC=VPC(
+            name_prefix="fsx-vpc",
+            num_public_subnet=0,
+            num_private_subnet=1,
+            private_subnet_cidr_blocks=["10.0.0.0/20"],
+            # CreateFileSystem rejects a Lustre file system whose security
+            # groups do not permit LNET traffic on port 988
+            # (InvalidNetworkSettings, a terminal code). A self-referencing
+            # all-protocols rule is what the FSx docs recommend.
+            security_group_self_referencing_ingress=True,
+        ),
     )
 
     try:

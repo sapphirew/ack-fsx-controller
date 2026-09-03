@@ -14,5 +14,9 @@
 FSx-specific test variables.
 """
 
+from e2e.bootstrap_resources import get_bootstrap_resources
+
 REPLACEMENT_VALUES = {
+    "PRIVATE_SUBNET_ID": get_bootstrap_resources().FSxVPC.private_subnets.subnet_ids[0],
+    "SECURITY_GROUP_ID": get_bootstrap_resources().FSxVPC.security_group.group_id,
 }
